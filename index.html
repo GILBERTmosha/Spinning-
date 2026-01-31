@@ -2,43 +2,51 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bahati Spin - Test Mode</title>
+    <title>Bahati Spin Pro</title>
     <style>
         body { display: flex; flex-direction: column; align-items: center; background: #050505; font-family: 'Segoe UI', sans-serif; color: white; padding: 15px; margin: 0; }
         
-        .lang-bar { width: 100%; display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 15px; }
-        .lang-btn { background: #111; border: 1px solid #333; color: #666; padding: 5px 12px; border-radius: 5px; font-size: 11px; cursor: pointer; }
-        .lang-btn.active { background: gold; color: black; border-color: gold; font-weight: bold; }
-
+        /* Header Stats */
         .header-box { width: 100%; display: flex; justify-content: space-between; margin-bottom: 10px; }
         .stat-card { background: #111; padding: 12px; border-radius: 10px; border: 1px solid #333; color: gold; font-weight: bold; font-size: 14px; flex: 1; text-align: center; margin: 0 5px; }
 
+        /* Shop Section */
+        .shop-container { width: 100%; background: #111; padding: 12px; border-radius: 10px; border: 1px solid #222; margin-bottom: 15px; box-sizing: border-box; }
+        .section-title { font-size: 11px; color: #555; text-transform: uppercase; margin-bottom: 8px; display: block; border-bottom: 1px solid #222; padding-bottom: 5px; }
+        .shop-item { display: flex; justify-content: space-between; align-items: center; background: #1a1a1a; padding: 10px; margin-bottom: 5px; border-radius: 8px; font-size: 13px; border-left: 3px solid #2ecc71; }
+        .buy-btn { background: #2ecc71; border: none; padding: 6px 15px; border-radius: 5px; font-weight: bold; color: white; cursor: pointer; }
+
+        /* Wheel */
         .wheel-container { position: relative; width: 260px; height: 260px; margin: 20px 0; }
         .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #ff0000; z-index: 100; }
-        #wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid #333; position: relative; overflow: hidden; transition: transform 5s cubic-bezier(0.15, 0, 0, 1); background: #1a1a1a; }
-        .segment { position: absolute; width: 50%; height: 50%; transform-origin: 100% 100%; left: 0; top: 0; display: flex; align-items: center; justify-content: center; }
+        #wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid #333; position: relative; overflow: hidden; transition: transform 8s cubic-bezier(0.15, 0, 0, 1); background: #1a1a1a; }
+        .segment { position: absolute; width: 50%; height: 50%; transform-origin: 100% 100%; left: 0; top: 0; }
 
-        #spin-btn { width: 95%; padding: 18px; border-radius: 50px; border: none; font-weight: bold; font-size: 16px; cursor: pointer; background: linear-gradient(135deg, #f1c40f, #f39c12); color: black; }
-        
-        /* Available Gifts Display */
-        .gift-box { width: 100%; background: #111; border: 1px solid #222; border-radius: 12px; padding: 10px; margin-top: 15px; box-sizing: border-box; }
-        .gift-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 8px; }
-        .g-item { background: #000; padding: 8px; border-radius: 6px; font-size: 10px; text-align: center; color: gold; border: 0.5px solid #333; }
+        /* Controls */
+        #spin-btn { width: 95%; padding: 18px; border-radius: 50px; border: none; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; background: linear-gradient(135deg, #f1c40f, #f39c12); color: black; }
+        #spin-btn:disabled { background: #222; color: #555; cursor: not-allowed; }
+        #msg { font-size: 11px; color: #ff4444; margin-top: 8px; text-align: center; font-weight: bold; }
 
         /* Withdrawal History */
         .record-box { width: 100%; background: #0a0a0a; border: 1px solid #222; border-radius: 12px; padding: 15px; margin-top: 15px; box-sizing: border-box; }
         .v-item { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 10px 0; border-bottom: 1px solid #111; }
         .claim-btn { background: #25d366; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 11px; font-weight: bold; }
-        .used-btn { background: #222; color: #555; padding: 6px 12px; border-radius: 6px; font-size: 11px; pointer-events: none; }
+        .used-btn { color: #444; font-size: 11px; text-decoration: line-through; }
 
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #111; border: 2px solid gold; padding: 25px; border-radius: 20px; z-index: 1000; width: 85%; text-align: center; }
+        /* Modals */
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #111; border: 2px solid gold; padding: 25px; border-radius: 20px; z-index: 1000; width: 85%; text-align: center; box-shadow: 0 0 100px #000; }
+        input { width: 100%; padding: 12px; margin: 15px 0; border-radius: 10px; border: 1px solid #333; background: #000; color: white; font-size: 16px; text-align: center; box-sizing: border-box; }
+        .modal-btn { background: #2ecc71; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="lang-bar">
-        <button class="lang-btn active" id="lang-sw" onclick="setLang('sw')">SWAHILI</button>
-        <button class="lang-btn" id="lang-en" onclick="setLang('en')">ENGLISH</button>
+    <div id="pay-modal" class="modal">
+        <h3 style="color: gold; margin: 0;">NUNUA COINS</h3>
+        <p id="pay-desc" style="font-size: 13px; color: #888; margin: 10px 0;"></p>
+        <input type="number" id="phone-input" placeholder="07XXXXXXXX">
+        <button class="modal-btn" onclick="processPayment()">LIPA SASA</button>
+        <button onclick="closePay()" style="background: none; border: none; color: #555; margin-top: 10px; cursor: pointer;">Ghairi</button>
     </div>
 
     <div id="popup" class="modal">
@@ -50,7 +58,14 @@
 
     <div class="header-box">
         <div class="stat-card">COINS: <span id="coin-count">0</span> 🪙</div>
-        <div class="stat-card">TEST MODE: ON ✅</div>
+        <div class="stat-card">1 SPIN = 100 🪙</div>
+    </div>
+
+    <div class="shop-container">
+        <span class="section-title">ONGEZA SALIO (MPESA/TIGO)</span>
+        <div class="shop-item"><span>🪙 30 Coins</span><button class="buy-btn" onclick="openPay(30, 100)">100/=</button></div>
+        <div class="shop-item"><span>🪙 50 Coins</span><button class="buy-btn" onclick="openPay(50, 200)">200/=</button></div>
+        <div class="shop-item"><span>🪙 100 Coins</span><button class="buy-btn" onclick="openPay(100, 500)">500/=</button></div>
     </div>
 
     <div class="wheel-container">
@@ -59,146 +74,140 @@
     </div>
 
     <button id="spin-btn" onclick="doSpin()">SPIN SASA</button>
-
-    <div class="gift-box">
-        <span style="font-size: 11px; color: #666; text-transform: uppercase;">ZAWADI ZILIZOPO / GIFTS</span>
-        <div class="gift-grid">
-            <div class="g-item">Vocha 600</div>
-            <div class="g-item">Vocha 500</div>
-            <div class="g-item">Vocha 200</div>
-            <div class="g-item">100 Coins</div>
-            <div class="g-item">50 Coins</div>
-            <div class="g-item">Try Again</div>
-        </div>
-    </div>
+    <div id="msg"></div>
 
     <div class="record-box">
-        <span style="font-size: 11px; color: #666; text-transform: uppercase;">HISTORIA YA USHINDI</span>
+        <span class="section-title">HISTORIA YA USHINDI</span>
         <div id="v-list"></div>
     </div>
 
     <script>
-        // WEKA NAMBA YAKO HAPA
-        const WHATSAPP_NUMBER = "255767123456"; 
+        // NAMBA YAKO YA WHATSAPP
+        const MY_PHONE = "255793770731"; 
 
-        let coins = 500; // Nimekuwekea Coins nyingi za kujaribu
-        let lang = 'sw';
+        let coins = parseInt(localStorage.getItem("totalCoins")) || 30;
+        let pendingPackage = { c: 0, p: 0 };
 
         const segments = [
-            {t: "Vocha 600", v: 600, type: 'v'}, 
-            {t: "Try Again", type: 'f'},
-            {t: "Vocha 500", v: 500, type: 'v'}, 
-            {t: "50 Coins", v: 50, type: 'c'},
-            {t: "Vocha 200", v: 200, type: 'v'}, 
-            {t: "100 Coins", v: 100, type: 'c'}
+            {t: "Try Later", type: 'f'}, {t: "50 Coins", v: 50, type: 'c'},
+            {t: "Vocha 600", v: 600, type: 'v'}, {t: "Try Later", type: 'f'},
+            {t: "Vocha 500", v: 500, type: 'v'}, {t: "Try Later", type: 'f'},
+            {t: "100 Coins", v: 100, type: 'c'}, {t: "Vocha 200", v: 200, type: 'v'}
         ];
 
         const wheel = document.getElementById('wheel');
         segments.forEach((s, i) => {
             const el = document.createElement('div');
             el.className = 'segment';
-            el.style.transform = `rotate(${i * 60}deg) skewY(30deg)`;
-            el.style.backgroundColor = (i % 2 == 0) ? "#0a0a0a" : "#151515";
+            el.style.transform = `rotate(${i * 45}deg) skewY(45deg)`;
+            el.style.backgroundColor = (i % 2 == 0) ? "#0a0a0a" : "#111";
             wheel.appendChild(el);
         });
 
         function updateUI() {
             document.getElementById('coin-count').innerText = coins;
+            localStorage.setItem("totalCoins", coins);
             renderHistory();
         }
 
         function doSpin() {
-            if(coins < 100) { alert("Huna Coins! Refresh App upate nyingine za bure."); return; }
+            if (coins < 100) {
+                document.getElementById('msg').innerText = "Unahitaji Coins 100 kuspini!";
+                return;
+            }
+            
             coins -= 100;
             updateUI();
-
+            document.getElementById('msg').innerText = "";
             const btn = document.getElementById('spin-btn');
             btn.disabled = true;
             btn.innerText = "INAZUNGUKA...";
 
-            const deg = 3600 + Math.floor(Math.random() * 3600);
+            const deg = 7200 + Math.floor(Math.random() * 3600);
             wheel.style.transform = `rotate(${deg}deg)`;
 
             setTimeout(() => {
-                // EASY MODE: 75% Chance ya kushinda vocha
+                // HARD MODE: 90% Lose, 7% Coins, 3% Voucher
                 let r = Math.random() * 100;
                 let res;
-                if (r < 40) res = segments[0];      // Vocha 600
-                else if (r < 75) res = segments[2]; // Vocha 500
-                else if (r < 90) res = segments[4]; // Vocha 200
-                else res = segments[1];             // Try again
+                if (r < 90) res = segments[0];      // Try Later
+                else if (r < 97) res = segments[1]; // 50 Coins
+                else res = segments[2];             // Vocha 600
 
                 if (res.type === 'v') {
-                    let id = Math.floor(1000 + Math.random() * 9000);
-                    saveWin(res.v, id);
-                    showWinPopup(res.v, id);
+                    let winId = Math.floor(10000 + Math.random() * 90000);
+                    saveWin(res.v, winId);
+                    showWinPopup(res.v, winId);
+                } else if (res.type === 'c') {
+                    coins += res.v;
+                    pop("SAFI!", "Umepata Coins " + res.v);
                 } else {
-                    pop("POLE!", "Leo huna bahati, jaribu tena!");
+                    pop("POLE!", "Jaribu tena safari ijayo!");
                 }
                 
                 btn.disabled = false;
                 btn.innerText = "SPIN SASA";
                 updateUI();
-            }, 5200);
+            }, 8200);
         }
 
         function showWinPopup(val, id) {
-            const t = lang === 'sw' ? "HONGERA!" : "CONGRATS!";
-            const b = lang === 'sw' ? `Umeshinda Vocha ya TZS ${val}!` : `You won TZS ${val} Voucher!`;
-            const linkText = lang === 'sw' ? "TOA PESA (WHATSAPP)" : "WITHDRAW (WHATSAPP)";
-            
-            document.getElementById('p-title').innerText = t;
-            document.getElementById('p-body').innerText = b;
+            document.getElementById('p-title').innerText = "HONGERA!";
+            document.getElementById('p-body').innerText = "Umeshinda Vocha ya TZS " + val;
             document.getElementById('claim-area').innerHTML = `
-                <a href="https://wa.me/${WHATSAPP_NUMBER}?text=Habari, nimeshinda Vocha ya ${val}. ID: ${id}" 
-                   target="_blank" class="claim-btn" style="display:block; text-align:center; padding:15px; margin-top:10px;" 
-                   onclick="markUsed(${id})">${linkText}</a>`;
+                <a href="https://wa.me/${MY_PHONE}?text=Habari, nimeshinda Vocha ya ${val}. ID ya Ushindi: ${id}" 
+                   target="_blank" class="modal-btn" style="display:block; text-decoration:none; margin-top:10px;" 
+                   onclick="markUsed(${id})">TOA PESA (WHATSAPP)</a>`;
             document.getElementById('popup').style.display = "block";
         }
 
         function saveWin(val, id) {
-            let h = JSON.parse(localStorage.getItem("testWins") || "[]");
-            h.push({val, id, time: new Date().toLocaleTimeString(), used: false});
-            localStorage.setItem("testWins", JSON.stringify(h));
+            let h = JSON.parse(localStorage.getItem("winHistory") || "[]");
+            h.push({val, id, used: false});
+            localStorage.setItem("winHistory", JSON.stringify(h));
         }
 
         function markUsed(id) {
-            let h = JSON.parse(localStorage.getItem("testWins") || "[]");
+            let h = JSON.parse(localStorage.getItem("winHistory") || "[]");
             h = h.map(i => i.id == id ? {...i, used: true} : i);
-            localStorage.setItem("testWins", JSON.stringify(h));
+            localStorage.setItem("winHistory", JSON.stringify(h));
             setTimeout(updateUI, 500);
         }
 
         function renderHistory() {
-            let h = JSON.parse(localStorage.getItem("testWins") || "[]");
+            let h = JSON.parse(localStorage.getItem("winHistory") || "[]");
             const div = document.getElementById('v-list');
-            div.innerHTML = h.reverse().map(i => `
+            div.innerHTML = h.length > 0 ? h.reverse().map(i => `
                 <div class="v-item">
-                    <span style="color:${i.used ? '#444':'#2ecc71'}">Vocha ${i.val} (ID: ${i.id})</span>
-                    ${i.used ? 
-                        `<span class="used-btn">IMETUMIKA</span>` : 
-                        `<a href="https://wa.me/${WHATSAPP_NUMBER}?text=Nimeshinda ${i.val}. ID: ${i.id}" class="claim-btn" onclick="markUsed(${i.id})">WITHDRAW</a>`}
-                </div>
-            `).join('');
+                    <span style="color:${i.used ? '#444':'#2ecc71'}">Vocha ${i.val}</span>
+                    ${i.used ? `<span class="used-btn">IMETUMIKA</span>` : `<a href="https://wa.me/${MY_PHONE}?text=Nimeshinda ${i.val}. ID: ${i.id}" class="claim-btn" onclick="markUsed(${i.id})">DAI</a>`}
+                </div>`).join('') : `<div style="color:#333; text-align:center; font-size:11px;">Bado huna ushindi...</div>`;
         }
 
-        function pop(t, b) {
-            document.getElementById('p-title').innerText = t;
-            document.getElementById('p-body').innerText = b;
-            document.getElementById('claim-area').innerHTML = "";
-            document.getElementById('popup').style.display = "block";
+        function openPay(c, p) {
+            pendingPackage = { c, p };
+            document.getElementById('pay-desc').innerText = "Lipa " + p + "/= kupata Coins " + c;
+            document.getElementById('pay-modal').style.display = "block";
         }
 
+        function processPayment() {
+            const phone = document.getElementById('phone-input').value;
+            if (phone.length < 10) { alert("Weka namba sahihi!"); return; }
+            coins += pendingPackage.c;
+            closePay();
+            updateUI();
+            alert("Malipo yamepokelewa! Coins zimeongezwa.");
+        }
+
+        function closePay() { document.getElementById('pay-modal').style.display = "none"; }
+        function pop(t, b) { document.getElementById('p-title').innerText = t; document.getElementById('p-body').innerText = b; document.getElementById('claim-area').innerHTML = ""; document.getElementById('popup').style.display = "block"; }
         function closePopup() { document.getElementById('popup').style.display = "none"; }
-        function setLang(l) { lang = l; updateUI(); }
 
         updateUI();
     </script>
 </body>
 </html>
-      const last = localStorage.getItem("lastSpin");
-            const diff = new Date().getTime() - (last || 0);
-            const isLock = last && diff < 10*60*60*1000;
+000;
             const btn = document.getElementById('spin-btn');
             const msg = document.getElementById('msg');
 
