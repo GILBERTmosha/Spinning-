@@ -2,295 +2,255 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bahati Spin Pro</title>
+    <title>Bahati Spin Pro - Multi-Language</title>
     <style>
-        body { display: flex; flex-direction: column; align-items: center; background: #050505; font-family: 'Segoe UI', sans-serif; color: white; padding: 15px; margin: 0; }
+        body { display: flex; flex-direction: column; align-items: center; background: #050505; font-family: 'Segoe UI', sans-serif; color: white; padding: 15px; margin: 0; user-select: none; }
         
-        /* Header Stats */
-        .header-box { width: 100%; display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .stat-card { background: #111; padding: 12px; border-radius: 10px; border: 1px solid #333; color: gold; font-weight: bold; font-size: 14px; flex: 1; text-align: center; margin: 0 5px; }
+        /* Language Switcher */
+        .lang-bar { width: 100%; display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 10px; }
+        .lang-btn { background: #111; border: 1px solid #333; color: #888; padding: 5px 12px; border-radius: 5px; font-size: 11px; cursor: pointer; transition: 0.3s; }
+        .lang-btn.active { background: gold; color: black; font-weight: bold; border-color: gold; }
 
-        /* Shop Section */
-        .shop-container { width: 100%; background: #111; padding: 12px; border-radius: 10px; border: 1px solid #222; margin-bottom: 15px; box-sizing: border-box; }
-        .section-title { font-size: 11px; color: #555; text-transform: uppercase; margin-bottom: 8px; display: block; border-bottom: 1px solid #222; padding-bottom: 5px; }
-        .shop-item { display: flex; justify-content: space-between; align-items: center; background: #1a1a1a; padding: 10px; margin-bottom: 5px; border-radius: 8px; font-size: 13px; border-left: 3px solid #2ecc71; }
-        .buy-btn { background: #2ecc71; border: none; padding: 6px 15px; border-radius: 5px; font-weight: bold; color: white; cursor: pointer; }
+        /* Admin Panel */
+        #admin-panel { display: none; width: 100%; background: #001a00; border: 2px solid #00ff00; border-radius: 12px; padding: 15px; margin-bottom: 15px; text-align: center; box-sizing: border-box; }
+        .code-display { font-family: monospace; font-size: 24px; color: gold; font-weight: bold; }
+
+        /* Stats & Header */
+        .header-box { width: 100%; display: flex; justify-content: space-between; margin-bottom: 10px; gap: 10px; }
+        .stat-card { background: #111; padding: 12px; border-radius: 10px; border: 1px solid #333; color: gold; font-weight: bold; flex: 1; text-align: center; }
+
+        /* Prizes Grid */
+        .prizes-grid { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
+        .prize-card { background: #111; border: 1px solid #222; padding: 10px 5px; border-radius: 8px; text-align: center; border-bottom: 2px solid gold; }
+        .prize-card.jackpot { border-bottom: 2px solid #ff0000; background: #1a0505; }
+        .prize-card div { font-size: 11px; color: gold; font-weight: bold; }
+        .prize-card span { font-size: 8px; color: #555; display: block; text-transform: uppercase; }
+
+        /* Buttons */
+        #free-spin-btn { width: 100%; padding: 12px; background: #222; color: #666; border: 1px dashed #444; border-radius: 8px; margin-bottom: 10px; font-weight: bold; }
+        #free-spin-btn.active { background: linear-gradient(135deg, #00c6ff, #0072ff); color: white; border: none; cursor: pointer; }
+
+        .shop-container { width: 100%; background: #111; padding: 15px; border-radius: 12px; border: 1px solid #222; margin-bottom: 15px; box-sizing: border-box; }
+        .shop-item { display: flex; justify-content: space-between; align-items: center; background: #1a1a1a; padding: 10px; margin-bottom: 5px; border-radius: 8px; font-size: 13px; }
+        .buy-btn { background: #25d366; color: white; padding: 5px 12px; border-radius: 5px; text-decoration: none; font-size: 11px; font-weight: bold; }
 
         /* Wheel */
         .wheel-container { position: relative; width: 260px; height: 260px; margin: 20px 0; }
-        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #ff0000; z-index: 100; }
-        #wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid #333; position: relative; overflow: hidden; transition: transform 8s cubic-bezier(0.15, 0, 0, 1); background: #1a1a1a; }
+        #wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid #222; position: relative; overflow: hidden; transition: transform 8s cubic-bezier(0.15, 0, 0, 1); background: #111; }
         .segment { position: absolute; width: 50%; height: 50%; transform-origin: 100% 100%; left: 0; top: 0; }
+        .pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #ff0000; z-index: 100; }
+        #spin-btn { width: 100%; padding: 18px; border-radius: 50px; border: none; font-weight: bold; font-size: 18px; cursor: pointer; background: gold; color: black; }
 
-        /* Controls */
-        #spin-btn { width: 95%; padding: 18px; border-radius: 50px; border: none; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; background: linear-gradient(135deg, #f1c40f, #f39c12); color: black; }
-        #spin-btn:disabled { background: #222; color: #555; cursor: not-allowed; }
-        #msg { font-size: 11px; color: #ff4444; margin-top: 8px; text-align: center; font-weight: bold; }
-
-        /* Withdrawal History */
-        .record-box { width: 100%; background: #0a0a0a; border: 1px solid #222; border-radius: 12px; padding: 15px; margin-top: 15px; box-sizing: border-box; }
-        .v-item { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 10px 0; border-bottom: 1px solid #111; }
-        .claim-btn { background: #25d366; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 11px; font-weight: bold; }
-        .used-btn { color: #444; font-size: 11px; text-decoration: line-through; }
-
-        /* Modals */
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #111; border: 2px solid gold; padding: 25px; border-radius: 20px; z-index: 1000; width: 85%; text-align: center; box-shadow: 0 0 100px #000; }
-        input { width: 100%; padding: 12px; margin: 15px 0; border-radius: 10px; border: 1px solid #333; background: #000; color: white; font-size: 16px; text-align: center; box-sizing: border-box; }
-        .modal-btn { background: #2ecc71; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; }
+        /* History */
+        .history-box { width: 100%; background: #0a0a0a; border: 1px solid #222; border-radius: 12px; padding: 15px; margin-top: 15px; box-sizing: border-box; }
+        .h-item { display: flex; justify-content: space-between; align-items: center; background: #111; padding: 10px; margin-bottom: 5px; border-radius: 8px; border: 1px solid #333; }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
-    <div id="pay-modal" class="modal">
-        <h3 style="color: gold; margin: 0;">NUNUA COINS</h3>
-        <p id="pay-desc" style="font-size: 13px; color: #888; margin: 10px 0;"></p>
-        <input type="number" id="phone-input" placeholder="07XXXXXXXX">
-        <button class="modal-btn" onclick="processPayment()">LIPA SASA</button>
-        <button onclick="closePay()" style="background: none; border: none; color: #555; margin-top: 10px; cursor: pointer;">Ghairi</button>
+    <div class="lang-bar">
+        <button class="lang-btn active" onclick="setLang('sw')">SWAHILI</button>
+        <button class="lang-btn" onclick="setLang('en')">ENGLISH</button>
     </div>
 
-    <div id="popup" class="modal">
-        <h2 id="p-title" style="margin-top:0; color: gold;"></h2>
-        <p id="p-body"></p>
-        <div id="claim-area"></div>
-        <button onclick="closePopup()" style="background: none; border: 1px solid #444; color: #888; padding: 10px; border-radius: 8px; width: 100%; margin-top: 10px;">FUNGA</button>
+    <div id="admin-panel">
+        <small style="color:#00ff00">ADMIN CONTROL</small>
+        <div style="display: flex; justify-content: space-around; margin: 10px 0;">
+            <div><small>50 COINS</small><div id="view-c50" class="code-display">----</div></div>
+            <div><small>100 COINS</small><div id="view-c100" class="code-display">----</div></div>
+        </div>
+        <button onclick="document.getElementById('admin-panel').style.display='none'" style="color:red; background:none; border:none; font-size:10px;">X CLOSE</button>
     </div>
 
     <div class="header-box">
-        <div class="stat-card">COINS: <span id="coin-count">0</span> 🪙</div>
-        <div class="stat-card">1 SPIN = 100 🪙</div>
+        <div class="stat-card"><span id="txt-balance">SALIO</span>: <span id="coin-count">0</span> 🪙</div>
+        <div class="stat-card" id="timer-box">05:00</div>
     </div>
 
+    <div class="prizes-grid">
+        <div class="prize-card jackpot"><div>Vocha 3000</div><span class="txt-jackpot">JACKPOT</span></div>
+        <div class="prize-card"><div>Vocha 1000</div><span class="txt-mega">MEGA WIN</span></div>
+        <div class="prize-card"><div>Vocha 500</div><span class="txt-big">BIG WIN</span></div>
+        <div class="prize-card"><div>1000 Coins</div><span class="txt-bonus">BONUS</span></div>
+        <div class="prize-card"><div>Vocha 200</div><span class="txt-win">WIN</span></div>
+        <div class="prize-card"><div>50 Coins</div><span class="txt-extra">EXTRA</span></div>
+    </div>
+
+    <button id="free-spin-btn" onclick="claimFreeSpin()">BURE: 24h 00m 00s</button>
+
     <div class="shop-container">
-        <span class="section-title">ONGEZA SALIO (MPESA/TIGO)</span>
-        <div class="shop-item"><span>🪙 30 Coins</span><button class="buy-btn" onclick="openPay(30, 100)">100/=</button></div>
-        <div class="shop-item"><span>🪙 50 Coins</span><button class="buy-btn" onclick="openPay(50, 200)">200/=</button></div>
-        <div class="shop-item"><span>🪙 100 Coins</span><button class="buy-btn" onclick="openPay(100, 500)">500/=</button></div>
+        <div class="shop-item"><span>50 Coins (150/=)</span><a href="https://wa.me/255783983518?text=Nahitaji 50 Coins" target="_blank" class="buy-btn btn-buy">NUNUA</a></div>
+        <div class="shop-item"><span>100 Coins (300/=)</span><a href="https://wa.me/255783983518?text=Nahitaji 100 Coins" target="_blank" class="buy-btn btn-buy">NUNUA</a></div>
+        <div style="display:flex; gap:5px; margin-top:10px;">
+            <input type="text" id="code-input" placeholder="Weka kodi..." style="flex:1; background:#000; border:1px solid #444; color:gold; padding:10px; border-radius:8px; text-align:center;">
+            <button onclick="processEntry()" style="background:gold; border:none; padding:0 15px; border-radius:8px; font-weight:bold; color:black;">OK</button>
+        </div>
     </div>
 
     <div class="wheel-container">
         <div class="pointer"></div>
         <div id="wheel"></div>
     </div>
+    
+    <button id="spin-btn" onclick="doSpin()">SPIN & WIN (100 🪙)</button>
 
-    <button id="spin-btn" onclick="doSpin()">SPIN SASA</button>
-    <div id="msg"></div>
-
-    <div class="record-box">
-        <span class="section-title">HISTORIA YA USHINDI</span>
-        <div id="v-list"></div>
+    <div class="history-box">
+        <small style="color:#666" id="txt-history">HISTORIA YA USHINDI</small>
+        <div id="win-list" style="margin-top:10px;"></div>
     </div>
 
     <script>
-        // NAMBA YAKO YA WHATSAPP
-        const MY_PHONE = "255793770731"; 
+        let lang = localStorage.getItem("lang") || "sw";
+        let coins = parseInt(localStorage.getItem("proCoins")) || 50;
+        let usedCodes = JSON.parse(localStorage.getItem("usedCodes") || "[]");
+        let myWins = JSON.parse(localStorage.getItem("myWins") || "[]");
+        let lastFreeSpin = localStorage.getItem("lastFreeSpin") || 0;
 
-        let coins = parseInt(localStorage.getItem("totalCoins")) || 30;
-        let pendingPackage = { c: 0, p: 0 };
+        const dictionary = {
+            sw: {
+                balance: "SALIO", jackpot: "JACKPOT", mega: "MEGA WIN", big: "BIG WIN", bonus: "BONUS", win: "WIN", extra: "EXTRA",
+                buy: "NUNUA", placeholder: "Weka kodi...", spin: "SPIN & WIN (100 🪙)", history: "HISTORIA YA USHINDI",
+                free: "BURE", claim: "CHUKUA SPIN YA BURE!", used: "Kodi imeshatumika!", invalid: "Kodi sio sahihi!",
+                winMsg: "HONGERA SANA! Umeshinda ", loseMsg: "Pole! Jaribu tena.", withdraw: "TOA",
+                claimTxt: "Habari, nahitaji Claim zawadi: "
+            },
+            en: {
+                balance: "BALANCE", jackpot: "JACKPOT", mega: "MEGA WIN", big: "BIG WIN", bonus: "BONUS", win: "WIN", extra: "EXTRA",
+                buy: "BUY", placeholder: "Enter code...", spin: "SPIN & WIN (100 🪙)", history: "WIN HISTORY",
+                free: "FREE", claim: "CLAIM FREE SPIN!", used: "Code already used!", invalid: "Invalid code!",
+                winMsg: "CONGRATULATIONS! You won ", loseMsg: "Sorry! Try again.", withdraw: "CLAIM",
+                claimTxt: "Hello, I want to claim my prize: "
+            }
+        };
 
-        const segments = [
-            {t: "Try Later", type: 'f'}, {t: "50 Coins", v: 50, type: 'c'},
-            {t: "Vocha 600", v: 600, type: 'v'}, {t: "Try Later", type: 'f'},
-            {t: "Vocha 500", v: 500, type: 'v'}, {t: "Try Later", type: 'f'},
-            {t: "100 Coins", v: 100, type: 'c'}, {t: "Vocha 200", v: 200, type: 'v'}
-        ];
+        function setLang(l) {
+            lang = l;
+            localStorage.setItem("lang", l);
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase() === (l === 'sw' ? 'swahili' : 'english')));
+            updateUI();
+        }
+
+        function getCodes() {
+            const now = Math.floor(Date.now() / 1000);
+            const step = Math.floor(now / 300);
+            return { c50: ((step % 8999) + 1414).toString(), c100: ((step % 7999) + 2525).toString(), timeLeft: 300 - (now % 300) };
+        }
+
+        function processEntry() {
+            const val = document.getElementById('code-input').value;
+            const live = getCodes();
+            const d = dictionary[lang];
+            if (val === "9999") { document.getElementById('admin-panel').style.display='block'; }
+            else if (usedCodes.includes(val)) { alert(d.used); }
+            else if (val === live.c50) { coins += 50; usedCodes.push(val); alert("+50 Coins!"); }
+            else if (val === live.c100) { coins += 100; usedCodes.push(val); alert("+100 Coins!"); }
+            else { alert(d.invalid); }
+            save(); updateUI();
+            document.getElementById('code-input').value = "";
+        }
+
+        function updateUI() {
+            const d = dictionary[lang];
+            document.getElementById('txt-balance').innerText = d.balance;
+            document.querySelectorAll('.txt-jackpot').forEach(e => e.innerText = d.jackpot);
+            document.querySelectorAll('.txt-mega').forEach(e => e.innerText = d.mega);
+            document.querySelectorAll('.txt-big').forEach(e => e.innerText = d.big);
+            document.querySelectorAll('.txt-bonus').forEach(e => e.innerText = d.bonus);
+            document.querySelectorAll('.txt-win').forEach(e => e.innerText = d.win);
+            document.querySelectorAll('.txt-extra').forEach(e => e.innerText = d.extra);
+            document.querySelectorAll('.btn-buy').forEach(e => e.innerText = d.buy);
+            document.getElementById('code-input').placeholder = d.placeholder;
+            document.getElementById('spin-btn').innerText = d.spin;
+            document.getElementById('txt-history').innerText = d.history;
+            document.getElementById('coin-count').innerText = coins;
+
+            const live = getCodes();
+            document.getElementById('view-c50').innerText = live.c50;
+            document.getElementById('view-c100').innerText = live.c100;
+            const m = Math.floor(live.timeLeft / 60);
+            const s = live.timeLeft % 60;
+            document.getElementById('timer-box').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+
+            const diff = (24 * 60 * 60 * 1000) - (Date.now() - lastFreeSpin);
+            const freeBtn = document.getElementById('free-spin-btn');
+            if (diff <= 0) {
+                freeBtn.innerText = d.claim;
+                freeBtn.className = "active";
+                freeBtn.disabled = false;
+            } else {
+                const h = Math.floor(diff / 3600000);
+                const mm = Math.floor((diff % 3600000) / 60000);
+                const ss = Math.floor((diff % 60000) / 1000);
+                freeBtn.innerText = `${d.free}: ${h}h ${mm}m ${ss}s`;
+                freeBtn.className = "";
+                freeBtn.disabled = true;
+            }
+            renderHistory();
+        }
+
+        function claimFreeSpin() {
+            coins += 100;
+            lastFreeSpin = Date.now();
+            localStorage.setItem("lastFreeSpin", lastFreeSpin);
+            save(); updateUI();
+        }
 
         const wheel = document.getElementById('wheel');
+        const segments = ["Vocha 3000", "50 Coins", "Vocha 100", "Try Again", "Vocha 1000", "500 Coins", "Vocha 500", "Vocha 200"];
         segments.forEach((s, i) => {
             const el = document.createElement('div');
             el.className = 'segment';
             el.style.transform = `rotate(${i * 45}deg) skewY(45deg)`;
-            el.style.backgroundColor = (i % 2 == 0) ? "#0a0a0a" : "#111";
+            el.style.backgroundColor = (i === 0) ? "#ff0000" : (i % 2 === 0 ? "#111" : "#d4af37");
             wheel.appendChild(el);
         });
 
-        function updateUI() {
-            document.getElementById('coin-count').innerText = coins;
-            localStorage.setItem("totalCoins", coins);
-            renderHistory();
-        }
-
         function doSpin() {
-            if (coins < 100) {
-                document.getElementById('msg').innerText = "Unahitaji Coins 100 kuspini!";
-                return;
-            }
-            
-            coins -= 100;
-            updateUI();
-            document.getElementById('msg').innerText = "";
-            const btn = document.getElementById('spin-btn');
-            btn.disabled = true;
-            btn.innerText = "INAZUNGUKA...";
-
-            const deg = 7200 + Math.floor(Math.random() * 3600);
+            const d = dictionary[lang];
+            if (coins < 100) { alert(lang === 'sw' ? "Unahitaji 100 Coins!" : "Need 100 Coins!"); return; }
+            coins -= 100; save(); updateUI();
+            const deg = 3600 + Math.floor(Math.random() * 3600);
             wheel.style.transform = `rotate(${deg}deg)`;
-
             setTimeout(() => {
-                // HARD MODE: 90% Lose, 7% Coins, 3% Voucher
-                let r = Math.random() * 100;
-                let res;
-                if (r < 90) res = segments[0];      // Try Later
-                else if (r < 97) res = segments[1]; // 50 Coins
-                else res = segments[2];             // Vocha 600
-
-                if (res.type === 'v') {
-                    let winId = Math.floor(10000 + Math.random() * 90000);
-                    saveWin(res.v, winId);
-                    showWinPopup(res.v, winId);
-                } else if (res.type === 'c') {
-                    coins += res.v;
-                    pop("SAFI!", "Umepata Coins " + res.v);
-                } else {
-                    pop("POLE!", "Jaribu tena safari ijayo!");
-                }
-                
-                btn.disabled = false;
-                btn.innerText = "SPIN SASA";
-                updateUI();
+                const winIdx = Math.floor(((360 - (deg % 360) + 22.5) % 360) / 45);
+                const win = segments[winIdx];
+                if (win.includes("Coins")) {
+                    coins += parseInt(win);
+                    alert(d.winMsg + win);
+                } else if (win.includes("Vocha")) {
+                    myWins.push({prize: win, id: Math.floor(Math.random()*900000)});
+                    alert(d.winMsg + win);
+                } else { alert(d.loseMsg); }
+                save(); updateUI();
             }, 8200);
         }
 
-        function showWinPopup(val, id) {
-            document.getElementById('p-title').innerText = "HONGERA!";
-            document.getElementById('p-body').innerText = "Umeshinda Vocha ya TZS " + val;
-            document.getElementById('claim-area').innerHTML = `
-                <a href="https://wa.me/${MY_PHONE}?text=Habari, nimeshinda Vocha ya ${val}. ID ya Ushindi: ${id}" 
-                   target="_blank" class="modal-btn" style="display:block; text-decoration:none; margin-top:10px;" 
-                   onclick="markUsed(${id})">TOA PESA (WHATSAPP)</a>`;
-            document.getElementById('popup').style.display = "block";
-        }
-
-        function saveWin(val, id) {
-            let h = JSON.parse(localStorage.getItem("winHistory") || "[]");
-            h.push({val, id, used: false});
-            localStorage.setItem("winHistory", JSON.stringify(h));
-        }
-
-        function markUsed(id) {
-            let h = JSON.parse(localStorage.getItem("winHistory") || "[]");
-            h = h.map(i => i.id == id ? {...i, used: true} : i);
-            localStorage.setItem("winHistory", JSON.stringify(h));
-            setTimeout(updateUI, 500);
-        }
-
         function renderHistory() {
-            let h = JSON.parse(localStorage.getItem("winHistory") || "[]");
-            const div = document.getElementById('v-list');
-            div.innerHTML = h.length > 0 ? h.reverse().map(i => `
-                <div class="v-item">
-                    <span style="color:${i.used ? '#444':'#2ecc71'}">Vocha ${i.val}</span>
-                    ${i.used ? `<span class="used-btn">IMETUMIKA</span>` : `<a href="https://wa.me/${MY_PHONE}?text=Nimeshinda ${i.val}. ID: ${i.id}" class="claim-btn" onclick="markUsed(${i.id})">DAI</a>`}
-                </div>`).join('') : `<div style="color:#333; text-align:center; font-size:11px;">Bado huna ushindi...</div>`;
+            const d = dictionary[lang];
+            document.getElementById('win-list').innerHTML = myWins.map((w, i) => `
+                <div class="h-item">
+                    <span>${w.prize} <small style="color:#444">(ID:${w.id})</small></span>
+                    <button onclick="withdraw(${i})" style="background:#25d366; border:none; color:white; padding:5px 10px; border-radius:5px; font-size:10px; font-weight:bold;">${d.withdraw}</button>
+                </div>
+            `).join('');
         }
 
-        function openPay(c, p) {
-            pendingPackage = { c, p };
-            document.getElementById('pay-desc').innerText = "Lipa " + p + "/= kupata Coins " + c;
-            document.getElementById('pay-modal').style.display = "block";
+        function withdraw(i) {
+            const w = myWins[i];
+            const d = dictionary[lang];
+            window.open(`https://wa.me/255793770731?text=${d.claimTxt}${w.prize} (ID: ${w.id})`);
+            myWins.splice(i, 1);
+            save(); updateUI();
         }
 
-        function processPayment() {
-            const phone = document.getElementById('phone-input').value;
-            if (phone.length < 10) { alert("Weka namba sahihi!"); return; }
-            coins += pendingPackage.c;
-            closePay();
-            updateUI();
-            alert("Malipo yamepokelewa! Coins zimeongezwa.");
+        function save() {
+            localStorage.setItem("proCoins", coins);
+            localStorage.setItem("usedCodes", JSON.stringify(usedCodes));
+            localStorage.setItem("myWins", JSON.stringify(myWins));
         }
 
-        function closePay() { document.getElementById('pay-modal').style.display = "none"; }
-        function pop(t, b) { document.getElementById('p-title').innerText = t; document.getElementById('p-body').innerText = b; document.getElementById('claim-area').innerHTML = ""; document.getElementById('popup').style.display = "block"; }
-        function closePopup() { document.getElementById('popup').style.display = "none"; }
-
-        updateUI();
-    </script>
-</body>
-</html>
-000;
-            const btn = document.getElementById('spin-btn');
-            const msg = document.getElementById('msg');
-
-            if (isLock) {
-                btn.innerText = t.bSpin;
-                if (coins < 100) {
-                    btn.className = "btn-locked"; btn.disabled = true;
-                    msg.innerText = t.need + (100 - coins);
-                } else {
-                    btn.className = "btn-ready"; btn.disabled = false;
-                    msg.innerText = t.bMsg;
-                }
-            } else {
-                btn.innerText = t.fSpin; btn.className = "btn-ready"; btn.disabled = false;
-                msg.innerText = t.fReady;
-            }
-            renderHistory();
-        }
-
-        function openPay(c, p) {
-            pendingPackage = { c, p };
-            const t = i18n[lang];
-            document.getElementById('pay-title').innerText = t.payT;
-            document.getElementById('pay-desc').innerText = t.payD + p + "/=";
-            document.getElementById('pay-confirm-btn').innerText = t.confirm;
-            document.getElementById('pay-cancel-btn').innerText = t.cancel;
-            document.getElementById('pay-modal').style.display = "block";
-        }
-
-        function processPayment() {
-            const phone = document.getElementById('phone-input').value;
-            if (phone.length < 10) {
-                alert(lang === 'sw' ? "Weka namba sahihi ya simu!" : "Enter a valid phone number!");
-                return;
-            }
-            alert(lang === 'sw' ? "Tafadhali kamilisha malipo kwenye simu yako kwa PIN." : "Please complete payment on your phone with your PIN.");
-            setTimeout(() => {
-                coins += pendingPackage.c;
-                update();
-                closePay();
-                alert(lang === 'sw' ? "Hongera! Malipo yamefanikiwa." : "Congrats! Payment successful.");
-            }, 2000);
-        }
-
-        function closePay() { document.getElementById('pay-modal').style.display = "none"; }
-
-        function doSpin() {
-            const last = localStorage.getItem("lastSpin");
-            const isBonus = last && (new Date().getTime() - last < 10*60*60*1000);
-            if (isBonus) { coins -= 100; update(); }
-
-            document.getElementById('spin-btn').disabled = true;
-            const deg = 7200 + Math.floor(Math.random() * 3600);
-            wheel.style.transform = `rotate(${deg}deg)`;
-
-            setTimeout(() => {
-                if (!isBonus) localStorage.setItem("lastSpin", new Date().getTime());
-                let r = Math.random() * 100;
-                let res = (r < 85) ? segments[0] : (r < 95 ? segments[3] : segments[2]);
-                const t = i18n[lang];
-                if (res.type === 'v') { saveWin(res.v); pop(t.winT, t.winB + res.v); }
-                else if (res.type === 'c') { coins += res.v; pop(t.coinT, t.coinB + res.v); }
-                else { pop(t.loseT, t.loseB); }
-                update();
-            }, 8200);
-        }
-
-        function saveWin(a) {
-            let h = JSON.parse(localStorage.getItem("vHistory") || "[]");
-            h.push({a, d: new Date().toLocaleTimeString()});
-            localStorage.setItem("vHistory", JSON.stringify(h));
-        }
-
-        function renderHistory() {
-            let h = JSON.parse(localStorage.getItem("vHistory") || "[]");
-            const div = document.getElementById('v-list');
-            div.innerHTML = h.length > 0 ? h.reverse().map(i => `<div class="v-item"><span>Vocha ${i.a}</span><span>${i.d}</span></div>`).join('') : `<div style="color:#333; font-size:11px; text-align:center;">${i18n[lang].empty}</div>`;
-        }
-
-        function pop(t, b) { document.getElementById('p-title').innerText = t; document.getElementById('p-body').innerText = b; document.getElementById('popup').style.display = "block"; }
-        function closePopup() { document.getElementById('popup').style.display = "none"; update(); }
-
-        update();
+        setLang(lang);
+        setInterval(updateUI, 1000);
     </script>
 </body>
 </html>
