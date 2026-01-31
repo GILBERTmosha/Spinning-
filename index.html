@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bahati Spin Pro - Professional Edition</title>
+    <style>
+        body { display: flex; flex-direction: column; align-items: center; background: #050505; font-family: 'Segoe UI', sans-serif; color: white; padding: 15px; margin: 0; }
+        
+        /* Lang Switcher */
+        .lang-bar { width: 100%; display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 15px; }
+        .lang-btn { background: #111; border: 1px solid #333; color: #666; padding: 5px 12px; border-radius: 5px; font-size: 11px; cursor: pointer; }
+        .lang-btn.active { background: gold; color: black; border-color: gold; font-weight: bold; }
+
+        .header-box { width: 100%; display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .stat-card { background: #111; padding: 12px; border-radius: 10px; border: 1px solid #333; color: gold; font-weight: bold; font-size: 14px; flex: 1; text-align: center; margin: 0 5px; }
+
+        /* Shop Section */
+        .shop-container { width: 100%; background: #111; padding: 12px; border-radius: 10px; border: 1px solid #222; margin-bottom: 15px; box-sizing: border-box; }
+        .shop-item { display: flex; justify-content: space-between; align-items: center; background: #1a1a1a; padding: 10px; margin-bottom: 5px; border-radius: 8px; font-size: 13px; border-left: 3px solid #2ecc71; }
+        .buy-btn { background: #2ecc71; border: none; padding: 6px 15px; border-radius: 5px; font-weight: bold; color: white; cursor: pointer; }
+
+        /* Wheel */
+        .wheel-container { position: relative; width: 240px; height: 240px; margin: 20px 0; }
+        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #ff0000; z-index: 100; }
+        #wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid #333; position: relative; overflow: hidden; transition: transform 8s cubic-bezier(0.15, 0, 0, 1); background: #1a1a1a; }
+        .segment { position: absolute; width: 50%; height: 50%; transform-origin: 100% 100%; left: 0; top: 0; }
+
+        /* Controls */
+        #spin-btn { width: 95%; padding: 18px; border-radius: 50px; border: none; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        .btn-ready { background: linear-gradient(135deg, #f1c40f, #f39c12); color: black; }
+        .btn-locked { background: #222; color: #555; cursor: not-allowed; }
+        #msg { font-size: 12px; color: #ff4444; margin-top: 10px; text-align: center; font-weight: bold; }
+
+        /* Records & Gifts */
+        .record-box { width: 100%; background: #0a0a0a; border: 1px solid #222; border-radius: 12px; padding: 15px; margin-top: 20px; box-sizing: border-box; }
+        .section-title { font-size: 11px; color: #555; text-transform: uppercase; margin-bottom: 10px; display: block; border-bottom: 1px solid #222; padding-bottom: 5px; }
+        .v-item { display: flex; justify-content: space-between; color: #2ecc71; font-size: 13px; padding: 6px 0; border-bottom: 1px solid #111; }
+        .gifts-display { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; justify-content: center; }
+        .gift-chip { background: #151515; border: 1px solid #333; padding: 5px 10px; border-radius: 8px; font-size: 11px; color: gold; border: 0.5px solid #444; }
+
+        /* Popups / Modals */
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #111; border: 2px solid gold; padding: 25px; border-radius: 20px; z-index: 1000; width: 85%; text-align: center; box-shadow: 0 0 100px #000; }
+        input { width: 100%; padding: 12px; margin: 15px 0; border-radius: 10px; border: 1px solid #333; background: #000; color: white; font-size: 16px; text-align: center; box-sizing: border-box; }
+        .modal-btn { background: #2ecc71; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="lang-bar">
+        <button class="lang-btn" id="lang-sw" onclick="setLang('sw')">SWAHILI</button>
+        <button class="lang-btn" id="lang-en" onclick="setLang('en')">ENGLISH</button>
+    </div>
+
+    <div id="pay-modal" class="modal">
+        <h3 id="pay-title" style="color: gold; margin: 0;"></h3>
+        <p id="pay-desc" style="font-size: 13px; color: #888; margin: 10px 0;"></p>
+        <input type="number" id="phone-input" placeholder="07XXXXXXXX" pattern="[0-9]*">
+        <button class="modal-btn" onclick="processPayment()" id="pay-confirm-btn"></button>
+        <button onclick="closePay()" style="background: none; border: none; color: #555; margin-top: 15px; cursor: pointer;" id="pay-cancel-btn"></button>
+    </div>
+
+    <div id="popup" class="modal">
+        <h2 id="p-title" style="margin-top:0"></h2>
+        <p id="p-body"></p>
+        <button onclick="closePopup()" style="background: gold; border: none; padding: 12px; border-radius: 8px; font-weight: bold; width: 100%;" id="pop-ok-btn"></button>
+    </div>
+
+    <div class="header-box">
+        <div class="stat-card"><span id="txt-bal"></span>: <span id="coin-count">0</span> 🪙</div>
+        <div class="stat-card">1 SPIN = 100 🪙</div>
+    </div>
+
+    <div class="shop-container">
+        <span class="section-title" id="txt-shop"></span>
+        <div class="shop-item"><span>🪙 30 Coins</span><button class="buy-btn" onclick="openPay(30, 100)">100/=</button></div>
+        <div class="shop-item"><span>🪙 50 Coins</span><button class="buy-btn" onclick="openPay(50, 200)">200/=</button></div>
+        <div class="shop-item"><span>🪙 70 Coins</span><button class="buy-btn" onclick="openPay(70, 500)">500/=</button></div>
+    </div>
+
+    <div class="wheel-container">
+        <div class="pointer"></div>
+        <div id="wheel"></div>
+    </div>
+
+    <button id="spin-btn" onclick="doSpin()"></button>
+    <div id="msg"></div>
+
+    <div class="record-box">
+        <span class="section-title" id="txt-hist"></span>
+        <div id="v-list"></div>
+        <span class="section-title" style="margin-top:20px;" id="txt-avail"></span>
+        <div class="gifts-display" id="gift-list">
+            </div>
+    </div>
+
+    <script>
+        let coins = parseInt(localStorage.getItem("totalCoins")) || 30;
+        let lang = localStorage.getItem("appLang") || 'sw';
+        let pendingPackage = { c: 0, p: 0 };
+
+        const i18n = {
+            sw: {
+                bal: "SALIO", shop: "NUNUA COINS", hist: "HISTORIA YA USHINDI", avail: "ZAWADI ZILIZOPO",
+                payT: "LIPA KWA M-PESA/TIGO", payD: "Ingiza namba ya simu utakatwa ", confirm: "LIPA SASA", cancel: "Ghairi",
+                empty: "Bado huna ushindi...", fSpin: "SPIN YA BURE (Saa 10)", bSpin: "SPIN YA BONUS (100 🪙)",
+                need: "Unahitaji Coins 100! Bado: ", bMsg: "Masaa 10 bado, unatumia 100 Coins.",
+                fReady: "Spin ya bure iko tayari!", winT: "HONGERA!", winB: "Umeshinda Vocha ya ",
+                coinT: "SAFI!", coinB: "Umepata Coins ", loseT: "POLE!", loseB: "Hujapata kitu safari hii!", ok: "SAWA",
+                gifts: ["🎁 Vocha 600", "🎁 Vocha 500", "🎁 Vocha 200", "🪙 100 Coins", "🪙 50 Coins", "❌ Jaribu Tena"]
+            },
+            en: {
+                bal: "BALANCE", shop: "BUY COINS", hist: "WINNING HISTORY", avail: "AVAILABLE GIFTS",
+                payT: "PAY VIA MOBILE", payD: "Enter phone number to pay ", confirm: "PAY NOW", cancel: "Cancel",
+                empty: "No wins yet...", fSpin: "FREE SPIN (10 Hours)", bSpin: "BONUS SPIN (100 🪙)",
+                need: "Need 100 Coins! Left: ", bMsg: "10 hours not over, costs 100 Coins.",
+                fReady: "Free spin ready!", winT: "CONGRATS!", winB: "You won Voucher ",
+                coinT: "GREAT!", coinB: "You got Coins ", loseT: "SORRY!", loseB: "No luck this time!", ok: "OK",
+                gifts: ["🎁 600 Voucher", "🎁 500 Voucher", "🎁 200 Voucher", "🪙 100 Coins", "🪙 50 Coins", "❌ Try Later"]
+            }
+        };
+
+        const segments = [
+            {t: "Try Later", type: 'f'}, {t: "50 Coins", v: 50, type: 'c'},
+            {t: "Vocha 600", v: 600, type: 'v'}, {t: "Try Later", type: 'f'},
+            {t: "Try Later", type: 'f'}, {t: "Vocha 500", v: 500, type: 'v'},
+            {t: "Try Later", type: 'f'}, {t: "100 Coins", v: 100, type: 'c'},
+            {t: "Try Later", type: 'f'}, {t: "Vocha 200", v: 200, type: 'v'}
+        ];
+
+        const wheel = document.getElementById('wheel');
+        segments.forEach((s, i) => {
+            const el = document.createElement('div');
+            el.className = 'segment';
+            el.style.transform = `rotate(${i * 36}deg) skewY(54deg)`;
+            el.style.backgroundColor = (i % 2 == 0) ? "#0a0a0a" : "#111";
+            wheel.appendChild(el);
+        });
+
+        function setLang(l) { lang = l; localStorage.setItem("appLang", l); update(); }
+
+        function update() {
+            document.getElementById('lang-sw').className = `lang-btn ${lang === 'sw' ? 'active' : ''}`;
+            document.getElementById('lang-en').className = `lang-btn ${lang === 'en' ? 'active' : ''}`;
+            
+            const t = i18n[lang];
+            document.getElementById('txt-bal').innerText = t.bal;
+            document.getElementById('txt-shop').innerText = t.shop;
+            document.getElementById('txt-hist').innerText = t.hist;
+            document.getElementById('txt-avail').innerText = t.avail;
+            document.getElementById('pop-ok-btn').innerText = t.ok;
+            document.getElementById('coin-count').innerText = coins;
+            localStorage.setItem("totalCoins", coins);
+
+            // Update Gift List UI
+            document.getElementById('gift-list').innerHTML = t.gifts.map(g => `<div class="gift-chip">${g}</div>`).join('');
+
+            const last = localStorage.getItem("lastSpin");
+            const diff = new Date().getTime() - (last || 0);
+            const isLock = last && diff < 10*60*60*1000;
+            const btn = document.getElementById('spin-btn');
+            const msg = document.getElementById('msg');
+
+            if (isLock) {
+                btn.innerText = t.bSpin;
+                if (coins < 100) {
+                    btn.className = "btn-locked"; btn.disabled = true;
+                    msg.innerText = t.need + (100 - coins);
+                } else {
+                    btn.className = "btn-ready"; btn.disabled = false;
+                    msg.innerText = t.bMsg;
+                }
+            } else {
+                btn.innerText = t.fSpin; btn.className = "btn-ready"; btn.disabled = false;
+                msg.innerText = t.fReady;
+            }
+            renderHistory();
+        }
+
+        function openPay(c, p) {
+            pendingPackage = { c, p };
+            const t = i18n[lang];
+            document.getElementById('pay-title').innerText = t.payT;
+            document.getElementById('pay-desc').innerText = t.payD + p + "/=";
+            document.getElementById('pay-confirm-btn').innerText = t.confirm;
+            document.getElementById('pay-cancel-btn').innerText = t.cancel;
+            document.getElementById('pay-modal').style.display = "block";
+        }
+
+        function processPayment() {
+            const phone = document.getElementById('phone-input').value;
+            if (phone.length < 10) {
+                alert(lang === 'sw' ? "Weka namba sahihi ya simu!" : "Enter a valid phone number!");
+                return;
+            }
+            alert(lang === 'sw' ? "Tafadhali kamilisha malipo kwenye simu yako kwa PIN." : "Please complete payment on your phone with your PIN.");
+            setTimeout(() => {
+                coins += pendingPackage.c;
+                update();
+                closePay();
+                alert(lang === 'sw' ? "Hongera! Malipo yamefanikiwa." : "Congrats! Payment successful.");
+            }, 2000);
+        }
+
+        function closePay() { document.getElementById('pay-modal').style.display = "none"; }
+
+        function doSpin() {
+            const last = localStorage.getItem("lastSpin");
+            const isBonus = last && (new Date().getTime() - last < 10*60*60*1000);
+            if (isBonus) { coins -= 100; update(); }
+
+            document.getElementById('spin-btn').disabled = true;
+            const deg = 7200 + Math.floor(Math.random() * 3600);
+            wheel.style.transform = `rotate(${deg}deg)`;
+
+            setTimeout(() => {
+                if (!isBonus) localStorage.setItem("lastSpin", new Date().getTime());
+                let r = Math.random() * 100;
+                let res = (r < 85) ? segments[0] : (r < 95 ? segments[3] : segments[2]);
+                const t = i18n[lang];
+                if (res.type === 'v') { saveWin(res.v); pop(t.winT, t.winB + res.v); }
+                else if (res.type === 'c') { coins += res.v; pop(t.coinT, t.coinB + res.v); }
+                else { pop(t.loseT, t.loseB); }
+                update();
+            }, 8200);
+        }
+
+        function saveWin(a) {
+            let h = JSON.parse(localStorage.getItem("vHistory") || "[]");
+            h.push({a, d: new Date().toLocaleTimeString()});
+            localStorage.setItem("vHistory", JSON.stringify(h));
+        }
+
+        function renderHistory() {
+            let h = JSON.parse(localStorage.getItem("vHistory") || "[]");
+            const div = document.getElementById('v-list');
+            div.innerHTML = h.length > 0 ? h.reverse().map(i => `<div class="v-item"><span>Vocha ${i.a}</span><span>${i.d}</span></div>`).join('') : `<div style="color:#333; font-size:11px; text-align:center;">${i18n[lang].empty}</div>`;
+        }
+
+        function pop(t, b) { document.getElementById('p-title').innerText = t; document.getElementById('p-body').innerText = b; document.getElementById('popup').style.display = "block"; }
+        function closePopup() { document.getElementById('popup').style.display = "none"; update(); }
+
+        update();
+    </script>
+</body>
+</html>
