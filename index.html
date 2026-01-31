@@ -2,88 +2,104 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bahati Spin Pro - Multi-Language</title>
+    <title>Bahati Spin Pro - Glow Edition</title>
     <style>
         body { display: flex; flex-direction: column; align-items: center; background: #050505; font-family: 'Segoe UI', sans-serif; color: white; padding: 15px; margin: 0; user-select: none; }
         
-        /* Language Switcher */
         .lang-bar { width: 100%; display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 10px; }
-        .lang-btn { background: #111; border: 1px solid #333; color: #888; padding: 5px 12px; border-radius: 5px; font-size: 11px; cursor: pointer; transition: 0.3s; }
-        .lang-btn.active { background: gold; color: black; font-weight: bold; border-color: gold; }
+        .lang-btn { background: #111; border: 1px solid #333; color: #888; padding: 5px 12px; border-radius: 5px; font-size: 11px; cursor: pointer; }
+        .lang-btn.active { background: gold; color: black; font-weight: bold; }
 
-        /* Admin Panel */
-        #admin-panel { display: none; width: 100%; background: #001a00; border: 2px solid #00ff00; border-radius: 12px; padding: 15px; margin-bottom: 15px; text-align: center; box-sizing: border-box; }
-        .code-display { font-family: monospace; font-size: 24px; color: gold; font-weight: bold; }
-
-        /* Stats & Header */
+        /* HEADER & STATS */
         .header-box { width: 100%; display: flex; justify-content: space-between; margin-bottom: 10px; gap: 10px; }
-        .stat-card { background: #111; padding: 12px; border-radius: 10px; border: 1px solid #333; color: gold; font-weight: bold; flex: 1; text-align: center; }
+        .stat-card { background: #111; padding: 12px; border-radius: 10px; border: 1px solid #333; color: gold; font-weight: bold; flex: 1; text-align: center; font-size: 14px; }
+        #timer-box { color: #ff4444; }
 
-        /* Prizes Grid */
-        .prizes-grid { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
-        .prize-card { background: #111; border: 1px solid #222; padding: 10px 5px; border-radius: 8px; text-align: center; border-bottom: 2px solid gold; }
-        .prize-card.jackpot { border-bottom: 2px solid #ff0000; background: #1a0505; }
+        /* JACKPOT ANIMATION (INAWAKAWAKA) */
+        @keyframes jackpot-glow {
+            0% { border-color: #ff0000; box-shadow: 0 0 5px #ff0000; }
+            33% { border-color: #00ff00; box-shadow: 0 0 15px #00ff00; }
+            66% { border-color: #0000ff; box-shadow: 0 0 5px #0000ff; }
+            100% { border-color: #ff0000; box-shadow: 0 0 15px #ff0000; }
+        }
+
+        .jackpot-card { 
+            background: #1a0505 !important; 
+            border: 2px solid #ff0000 !important; 
+            animation: jackpot-glow 1.5s infinite linear;
+        }
+
+        .main-container { width: 100%; background: #0f0f0f; border-radius: 15px; border: 1px solid #222; padding: 15px; box-sizing: border-box; margin-bottom: 15px; }
+        .section-title { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; display: block; border-left: 3px solid gold; padding-left: 8px; }
+
+        .prizes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
+        .prize-card { background: #1a1a1a; padding: 10px 5px; border-radius: 8px; text-align: center; border: 1px solid #333; }
         .prize-card div { font-size: 11px; color: gold; font-weight: bold; }
-        .prize-card span { font-size: 8px; color: #555; display: block; text-transform: uppercase; }
+        .prize-card small { font-size: 8px; color: #777; display: block; }
 
-        /* Buttons */
-        #free-spin-btn { width: 100%; padding: 12px; background: #222; color: #666; border: 1px dashed #444; border-radius: 8px; margin-bottom: 10px; font-weight: bold; }
-        #free-spin-btn.active { background: linear-gradient(135deg, #00c6ff, #0072ff); color: white; border: none; cursor: pointer; }
+        /* SHOP & BUTTONS */
+        .shop-item { display: flex; justify-content: space-between; align-items: center; background: #161616; padding: 12px; margin-bottom: 8px; border-radius: 10px; }
+        .buy-btn { background: #25d366; color: white; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: bold; }
+        .code-area { display: flex; gap: 8px; margin-top: 10px; }
+        #code-input { flex: 1; background: #000; border: 1px solid #444; color: gold; padding: 12px; border-radius: 8px; text-align: center; }
+        .ok-btn { background: gold; border: none; padding: 0 20px; border-radius: 8px; font-weight: bold; }
 
-        .shop-container { width: 100%; background: #111; padding: 15px; border-radius: 12px; border: 1px solid #222; margin-bottom: 15px; box-sizing: border-box; }
-        .shop-item { display: flex; justify-content: space-between; align-items: center; background: #1a1a1a; padding: 10px; margin-bottom: 5px; border-radius: 8px; font-size: 13px; }
-        .buy-btn { background: #25d366; color: white; padding: 5px 12px; border-radius: 5px; text-decoration: none; font-size: 11px; font-weight: bold; }
-
-        /* Wheel */
-        .wheel-container { position: relative; width: 260px; height: 260px; margin: 20px 0; }
-        #wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid #222; position: relative; overflow: hidden; transition: transform 8s cubic-bezier(0.15, 0, 0, 1); background: #111; }
+        /* WHEEL */
+        .wheel-container { position: relative; width: 270px; height: 270px; margin: 25px 0; }
+        #wheel { width: 100%; height: 100%; border-radius: 50%; border: 8px solid #222; position: relative; overflow: hidden; transition: transform 8s cubic-bezier(0.15, 0, 0, 1); background: #111; }
         .segment { position: absolute; width: 50%; height: 50%; transform-origin: 100% 100%; left: 0; top: 0; }
-        .pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #ff0000; z-index: 100; }
-        #spin-btn { width: 100%; padding: 18px; border-radius: 50px; border: none; font-weight: bold; font-size: 18px; cursor: pointer; background: gold; color: black; }
+        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 30px solid #ff0000; z-index: 100; }
+        #spin-btn { width: 100%; padding: 20px; border-radius: 50px; border: none; font-weight: bold; font-size: 18px; cursor: pointer; background: gold; color: black; box-shadow: 0 5px 0 #b8860b; }
+        #spin-btn:active { transform: translateY(3px); box-shadow: none; }
 
-        /* History */
-        .history-box { width: 100%; background: #0a0a0a; border: 1px solid #222; border-radius: 12px; padding: 15px; margin-top: 15px; box-sizing: border-box; }
-        .h-item { display: flex; justify-content: space-between; align-items: center; background: #111; padding: 10px; margin-bottom: 5px; border-radius: 8px; border: 1px solid #333; }
+        #admin-panel { display: none; width: 100%; background: #001a00; border: 2px solid #00ff00; border-radius: 12px; padding: 15px; margin-bottom: 15px; text-align: center; }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
     <div class="lang-bar">
-        <button class="lang-btn active" onclick="setLang('sw')">SWAHILI</button>
-        <button class="lang-btn" onclick="setLang('en')">ENGLISH</button>
+        <button id="btn-sw" class="lang-btn active" onclick="setLang('sw')">SWAHILI</button>
+        <button id="btn-en" class="lang-btn" onclick="setLang('en')">ENGLISH</button>
     </div>
 
     <div id="admin-panel">
-        <small style="color:#00ff00">ADMIN CONTROL</small>
+        <small style="color:#00ff00">ADMIN: KODI ZA MASAA 2</small>
         <div style="display: flex; justify-content: space-around; margin: 10px 0;">
-            <div><small>50 COINS</small><div id="view-c50" class="code-display">----</div></div>
-            <div><small>100 COINS</small><div id="view-c100" class="code-display">----</div></div>
+            <div><small>50 COINS</small><div id="view-c50" style="color:gold; font-size:20px;">----</div></div>
+            <div><small>100 COINS</small><div id="view-c100" style="color:gold; font-size:20px;">----</div></div>
         </div>
-        <button onclick="document.getElementById('admin-panel').style.display='none'" style="color:red; background:none; border:none; font-size:10px;">X CLOSE</button>
+        <button onclick="document.getElementById('admin-panel').style.display='none'" style="color:red; background:none; border:none; cursor:pointer;">[ CLOSE ]</button>
     </div>
 
     <div class="header-box">
-        <div class="stat-card"><span id="txt-balance">SALIO</span>: <span id="coin-count">0</span> 🪙</div>
-        <div class="stat-card" id="timer-box">05:00</div>
+        <div class="stat-card"><span id="txt-salio">SALIO</span>: <span id="coin-count">0</span> 🪙</div>
+        <div class="stat-card"><span id="txt-timer-label">KODI MPYA</span>: <span id="timer-box">02:00:00</span></div>
     </div>
 
-    <div class="prizes-grid">
-        <div class="prize-card jackpot"><div>Vocha 3000</div><span class="txt-jackpot">JACKPOT</span></div>
-        <div class="prize-card"><div>Vocha 1000</div><span class="txt-mega">MEGA WIN</span></div>
-        <div class="prize-card"><div>Vocha 500</div><span class="txt-big">BIG WIN</span></div>
-        <div class="prize-card"><div>1000 Coins</div><span class="txt-bonus">BONUS</span></div>
-        <div class="prize-card"><div>Vocha 200</div><span class="txt-win">WIN</span></div>
-        <div class="prize-card"><div>50 Coins</div><span class="txt-extra">EXTRA</span></div>
-    </div>
+    <div class="main-container">
+        <span class="section-title" id="txt-prize-title">Zawadi za Kushinda</span>
+        <div class="prizes-grid">
+            <div class="prize-card jackpot-card"><div>Vocha 3000</div><small id="txt-jack-label">JACKPOT</small></div>
+            <div class="prize-card"><div>Vocha 1000</div><small>MEGA</small></div>
+            <div class="prize-card"><div>Vocha 500</div><small>BIG</small></div>
+            <div class="prize-card"><div>Vocha 200</div><small>WIN</small></div>
+            <div class="prize-card"><div>100 Coins</div><small>BONUS</small></div>
+            <div class="prize-card"><div>50 Coins</div><small>EXTRA</small></div>
+        </div>
 
-    <button id="free-spin-btn" onclick="claimFreeSpin()">BURE: 24h 00m 00s</button>
+        <span class="section-title" id="txt-shop-title">Nunua Coins / Weka Kodi</span>
+        <div class="shop-item">
+            <span>50 Coins <small>(150/=)</small></span>
+            <a href="https://wa.me/255783983518?text=Nahitaji 50 Coins" target="_blank" class="buy-btn btn-buy">NUNUA</a>
+        </div>
+        <div class="shop-item">
+            <span>100 Coins <small>(300/=)</small></span>
+            <a href="https://wa.me/255783983518?text=Nahitaji 100 Coins" target="_blank" class="buy-btn btn-buy">NUNUA</a>
+        </div>
 
-    <div class="shop-container">
-        <div class="shop-item"><span>50 Coins (150/=)</span><a href="https://wa.me/255783983518?text=Nahitaji 50 Coins" target="_blank" class="buy-btn btn-buy">NUNUA</a></div>
-        <div class="shop-item"><span>100 Coins (300/=)</span><a href="https://wa.me/255783983518?text=Nahitaji 100 Coins" target="_blank" class="buy-btn btn-buy">NUNUA</a></div>
-        <div style="display:flex; gap:5px; margin-top:10px;">
-            <input type="text" id="code-input" placeholder="Weka kodi..." style="flex:1; background:#000; border:1px solid #444; color:gold; padding:10px; border-radius:8px; text-align:center;">
-            <button onclick="processEntry()" style="background:gold; border:none; padding:0 15px; border-radius:8px; font-weight:bold; color:black;">OK</button>
+        <div class="code-area">
+            <input type="text" id="code-input" placeholder="Weka kodi...">
+            <button class="ok-btn" onclick="processEntry()">OK</button>
         </div>
     </div>
 
@@ -92,155 +108,116 @@
         <div id="wheel"></div>
     </div>
     
-    <button id="spin-btn" onclick="doSpin()">SPIN & WIN (100 🪙)</button>
+    <button id="spin-btn" onclick="doSpin()">ZUNGUSHA (100 🪙)</button>
 
-    <div class="history-box">
-        <small style="color:#666" id="txt-history">HISTORIA YA USHINDI</small>
-        <div id="win-list" style="margin-top:10px;"></div>
+    <div class="main-container" style="margin-top:20px;">
+        <span class="section-title" id="txt-hist-title">Historia ya Zawadi</span>
+        <div id="win-list" style="font-size: 13px; color: #ccc;"></div>
     </div>
 
     <script>
         let lang = localStorage.getItem("lang") || "sw";
-        let coins = parseInt(localStorage.getItem("proCoins")) || 50;
+        let coins = parseInt(localStorage.getItem("proCoins")) || 100;
         let usedCodes = JSON.parse(localStorage.getItem("usedCodes") || "[]");
         let myWins = JSON.parse(localStorage.getItem("myWins") || "[]");
-        let lastFreeSpin = localStorage.getItem("lastFreeSpin") || 0;
+        let isFirstSpin = localStorage.getItem("isFirstSpin") === null; 
 
-        const dictionary = {
+        const dict = {
             sw: {
-                balance: "SALIO", jackpot: "JACKPOT", mega: "MEGA WIN", big: "BIG WIN", bonus: "BONUS", win: "WIN", extra: "EXTRA",
-                buy: "NUNUA", placeholder: "Weka kodi...", spin: "SPIN & WIN (100 🪙)", history: "HISTORIA YA USHINDI",
-                free: "BURE", claim: "CHUKUA SPIN YA BURE!", used: "Kodi imeshatumika!", invalid: "Kodi sio sahihi!",
-                winMsg: "HONGERA SANA! Umeshinda ", loseMsg: "Pole! Jaribu tena.", withdraw: "TOA",
-                claimTxt: "Habari, nahitaji Claim zawadi: "
+                salio: "SALIO", timer: "KODI MPYA", prize: "Zawadi za Kushinda", shop: "Nunua Coins / Weka Kodi", 
+                buy: "NUNUA", spin: "ZUNGUSHA (100 🪙)", hist: "Historia ya Zawadi", toa: "TOA",
+                msgWin: "HONGERA! Umeshinda ", msgLose: "Jaribu Tena!", msgFirst: "Karibu! Spin ya kwanza umeshinda 100 Coins!"
             },
             en: {
-                balance: "BALANCE", jackpot: "JACKPOT", mega: "MEGA WIN", big: "BIG WIN", bonus: "BONUS", win: "WIN", extra: "EXTRA",
-                buy: "BUY", placeholder: "Enter code...", spin: "SPIN & WIN (100 🪙)", history: "WIN HISTORY",
-                free: "FREE", claim: "CLAIM FREE SPIN!", used: "Code already used!", invalid: "Invalid code!",
-                winMsg: "CONGRATULATIONS! You won ", loseMsg: "Sorry! Try again.", withdraw: "CLAIM",
-                claimTxt: "Hello, I want to claim my prize: "
+                salio: "BALANCE", timer: "NEW CODE", prize: "Prizes to Win", shop: "Buy Coins / Enter Code", 
+                buy: "BUY", spin: "SPIN & WIN (100 🪙)", hist: "Prize History", toa: "CLAIM",
+                msgWin: "CONGRATS! You won ", msgLose: "Try Again!", msgFirst: "Welcome! First spin bonus: 100 Coins!"
             }
         };
 
         function setLang(l) {
             lang = l;
             localStorage.setItem("lang", l);
-            document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase() === (l === 'sw' ? 'swahili' : 'english')));
             updateUI();
         }
 
-        function getCodes() {
-            const now = Math.floor(Date.now() / 1000);
-            const step = Math.floor(now / 300);
-            return { c50: ((step % 8999) + 1414).toString(), c100: ((step % 7999) + 2525).toString(), timeLeft: 300 - (now % 300) };
-        }
-
-        function processEntry() {
-            const val = document.getElementById('code-input').value;
-            const live = getCodes();
-            const d = dictionary[lang];
-            if (val === "9999") { document.getElementById('admin-panel').style.display='block'; }
-            else if (usedCodes.includes(val)) { alert(d.used); }
-            else if (val === live.c50) { coins += 50; usedCodes.push(val); alert("+50 Coins!"); }
-            else if (val === live.c100) { coins += 100; usedCodes.push(val); alert("+100 Coins!"); }
-            else { alert(d.invalid); }
-            save(); updateUI();
-            document.getElementById('code-input').value = "";
-        }
-
         function updateUI() {
-            const d = dictionary[lang];
-            document.getElementById('txt-balance').innerText = d.balance;
-            document.querySelectorAll('.txt-jackpot').forEach(e => e.innerText = d.jackpot);
-            document.querySelectorAll('.txt-mega').forEach(e => e.innerText = d.mega);
-            document.querySelectorAll('.txt-big').forEach(e => e.innerText = d.big);
-            document.querySelectorAll('.txt-bonus').forEach(e => e.innerText = d.bonus);
-            document.querySelectorAll('.txt-win').forEach(e => e.innerText = d.win);
-            document.querySelectorAll('.txt-extra').forEach(e => e.innerText = d.extra);
-            document.querySelectorAll('.btn-buy').forEach(e => e.innerText = d.buy);
-            document.getElementById('code-input').placeholder = d.placeholder;
+            const d = dict[lang];
+            document.getElementById('txt-salio').innerText = d.salio;
+            document.getElementById('txt-timer-label').innerText = d.timer;
+            document.getElementById('txt-prize-title').innerText = d.prize;
+            document.getElementById('txt-shop-title').innerText = d.shop;
+            document.querySelectorAll('.btn-buy').forEach(b => b.innerText = d.buy);
             document.getElementById('spin-btn').innerText = d.spin;
-            document.getElementById('txt-history').innerText = d.history;
+            document.getElementById('txt-hist-title').innerText = d.hist;
             document.getElementById('coin-count').innerText = coins;
+            
+            document.getElementById('btn-sw').classList.toggle('active', lang === 'sw');
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
 
-            const live = getCodes();
-            document.getElementById('view-c50').innerText = live.c50;
-            document.getElementById('view-c100').innerText = live.c100;
-            const m = Math.floor(live.timeLeft / 60);
-            const s = live.timeLeft % 60;
-            document.getElementById('timer-box').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            const now = Math.floor(Date.now() / 1000);
+            const cycle = 7200;
+            const timeLeft = cycle - (now % cycle);
+            const h = Math.floor(timeLeft / 3600).toString().padStart(2, '0');
+            const m = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
+            const s = (timeLeft % 60).toString().padStart(2, '0');
+            document.getElementById('timer-box').innerText = `${h}:${m}:${s}`;
 
-            const diff = (24 * 60 * 60 * 1000) - (Date.now() - lastFreeSpin);
-            const freeBtn = document.getElementById('free-spin-btn');
-            if (diff <= 0) {
-                freeBtn.innerText = d.claim;
-                freeBtn.className = "active";
-                freeBtn.disabled = false;
-            } else {
-                const h = Math.floor(diff / 3600000);
-                const mm = Math.floor((diff % 3600000) / 60000);
-                const ss = Math.floor((diff % 60000) / 1000);
-                freeBtn.innerText = `${d.free}: ${h}h ${mm}m ${ss}s`;
-                freeBtn.className = "";
-                freeBtn.disabled = true;
-            }
+            const step = Math.floor(now / cycle);
+            document.getElementById('view-c50').innerText = ((step % 8999) + 1414);
+            document.getElementById('view-c100').innerText = ((step % 7999) + 2525);
             renderHistory();
         }
 
-        function claimFreeSpin() {
-            coins += 100;
-            lastFreeSpin = Date.now();
-            localStorage.setItem("lastFreeSpin", lastFreeSpin);
-            save(); updateUI();
-        }
-
-        const wheel = document.getElementById('wheel');
-        const segments = ["Vocha 3000", "50 Coins", "Vocha 100", "Try Again", "Vocha 1000", "500 Coins", "Vocha 500", "Vocha 200"];
-        segments.forEach((s, i) => {
-            const el = document.createElement('div');
-            el.className = 'segment';
-            el.style.transform = `rotate(${i * 45}deg) skewY(45deg)`;
-            el.style.backgroundColor = (i === 0) ? "#ff0000" : (i % 2 === 0 ? "#111" : "#d4af37");
-            wheel.appendChild(el);
-        });
-
         function doSpin() {
-            const d = dictionary[lang];
-            if (coins < 100) { alert(lang === 'sw' ? "Unahitaji 100 Coins!" : "Need 100 Coins!"); return; }
+            if (coins < 100) { alert(lang === 'sw' ? "Coins 100 zinahitajika!" : "100 Coins needed!"); return; }
             coins -= 100; save(); updateUI();
+
             const deg = 3600 + Math.floor(Math.random() * 3600);
-            wheel.style.transform = `rotate(${deg}deg)`;
+            document.getElementById('wheel').style.transform = `rotate(${deg}deg)`;
+
             setTimeout(() => {
-                const winIdx = Math.floor(((360 - (deg % 360) + 22.5) % 360) / 45);
-                const win = segments[winIdx];
-                if (win.includes("Coins")) {
-                    coins += parseInt(win);
-                    alert(d.winMsg + win);
-                } else if (win.includes("Vocha")) {
-                    myWins.push({prize: win, id: Math.floor(Math.random()*900000)});
-                    alert(d.winMsg + win);
-                } else { alert(d.loseMsg); }
+                let win = "";
+                if (isFirstSpin) {
+                    win = "100 Coins";
+                    isFirstSpin = false;
+                    localStorage.setItem("isFirstSpin", "false");
+                    alert(dict[lang].msgFirst);
+                } else {
+                    let r = Math.random() * 100;
+                    if (r < 90) win = "Try Again";
+                    else if (r < 90.5) win = "Vocha 1000";
+                    else if (r < 90.55) win = "Vocha 3000"; // Jackpot nafasi ndogo sana
+                    else win = "50 Coins";
+                }
+
+                if (win === "100 Coins") coins += 100;
+                else if (win === "50 Coins") coins += 50;
+                else if (win.includes("Vocha")) {
+                    myWins.push({prize: win, id: Math.floor(100000 + Math.random()*899999)});
+                }
+                
+                if (win === "Try Again") alert(dict[lang].msgLose);
+                else if (!win.includes("100 Coins")) alert(dict[lang].msgWin + win);
+
                 save(); updateUI();
             }, 8200);
         }
 
-        function renderHistory() {
-            const d = dictionary[lang];
-            document.getElementById('win-list').innerHTML = myWins.map((w, i) => `
-                <div class="h-item">
-                    <span>${w.prize} <small style="color:#444">(ID:${w.id})</small></span>
-                    <button onclick="withdraw(${i})" style="background:#25d366; border:none; color:white; padding:5px 10px; border-radius:5px; font-size:10px; font-weight:bold;">${d.withdraw}</button>
-                </div>
-            `).join('');
-        }
+        function processEntry() {
+            const val = document.getElementById('code-input').value.trim();
+            const step = Math.floor(Math.floor(Date.now() / 1000) / 7200);
+            const c50 = ((step % 8999) + 1414).toString();
+            const c100 = ((step % 7999) + 2525).toString();
 
-        function withdraw(i) {
-            const w = myWins[i];
-            const d = dictionary[lang];
-            window.open(`https://wa.me/255793770731?text=${d.claimTxt}${w.prize} (ID: ${w.id})`);
-            myWins.splice(i, 1);
-            save(); updateUI();
+            if (val === "9999") { document.getElementById('admin-panel').style.display = 'block'; return; }
+            if (usedCodes.includes(val)) { alert(lang === 'sw' ? "Imeshatumika!" : "Already used!"); return; }
+
+            if (val === c50) { coins += 50; usedCodes.push(val); }
+            else if (val === c100) { coins += 100; usedCodes.push(val); }
+            else { alert("Error!"); return; }
+
+            save(); document.getElementById('code-input').value = ""; updateUI();
         }
 
         function save() {
@@ -249,8 +226,30 @@
             localStorage.setItem("myWins", JSON.stringify(myWins));
         }
 
-        setLang(lang);
+        function renderHistory() {
+            document.getElementById('win-list').innerHTML = myWins.map((w, i) => `
+                <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #222;">
+                    <span>${w.prize}</span>
+                    <button onclick="claim(${i})" style="color:#25d366; background:none; border:none; font-weight:bold;">${dict[lang].toa}</button>
+                </div>`).join('');
+        }
+
+        function claim(i) {
+            window.open(`https://wa.me/255793770731?text=Claim: ${myWins[i].prize} ID: ${myWins[i].id}`);
+            myWins.splice(i, 1); save(); updateUI();
+        }
+
+        const wheel = document.getElementById('wheel');
+        for(let i=0; i<8; i++) {
+            const el = document.createElement('div');
+            el.className = 'segment';
+            el.style.transform = `rotate(${i * 45}deg) skewY(45deg)`;
+            el.style.backgroundColor = (i % 2 === 0 ? "#111" : "#d4af37");
+            wheel.appendChild(el);
+        }
+
         setInterval(updateUI, 1000);
+        updateUI();
     </script>
 </body>
 </html>
