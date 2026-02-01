@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bahati Spin Pro</title>
+    <title>Bahati Spin Pro - History Delete</title>
     <style>
         body { display: flex; flex-direction: column; align-items: center; background: #050505; font-family: sans-serif; color: white; padding: 10px; margin: 0; user-select: none; }
         
@@ -11,38 +11,33 @@
         .lang-btn.active { background: gold; color: black; font-weight: bold; }
 
         .header-box { width: 100%; display: flex; justify-content: space-between; margin-bottom: 10px; gap: 8px; }
-        .stat-card { background: #111; padding: 10px; border-radius: 8px; border: 1px solid #333; color: gold; font-weight: bold; flex: 1; text-align: center; font-size: 13px; }
+        .stat-card { background: #111; padding: 10px; border-radius: 8px; border: 1px solid #333; color: gold; font-weight: bold; flex: 1; text-align: center; font-size: 11px; }
 
-        @keyframes jackpot-glow {
-            0% { border-color: red; box-shadow: 0 0 5px red; }
-            50% { border-color: lime; box-shadow: 0 0 15px lime; }
-            100% { border-color: red; box-shadow: 0 0 5px red; }
-        }
-        .jackpot-card { animation: jackpot-glow 1s infinite linear !important; border: 2px solid red !important; }
-
-        /* NAHITAJI 50 COINS BUTTON */
-        #free-50-btn { width: 100%; padding: 12px; background: #222; color: #666; border: 1px dashed #444; border-radius: 8px; margin-bottom: 10px; font-weight: bold; text-decoration: none; display: block; text-align: center; font-size: 14px; box-sizing: border-box; }
-        #free-50-btn.active { background: linear-gradient(to right, #00c6ff, #0072ff); color: white; border: none; cursor: pointer; }
+        #free-50-btn { width: 100%; padding: 12px; background: #222; color: #666; border: 1px dashed #444; border-radius: 8px; margin-bottom: 10px; font-weight: bold; text-align: center; font-size: 14px; box-sizing: border-box; cursor: default; }
+        #free-50-btn.active { background: linear-gradient(to right, #00c6ff, #0072ff); color: white; border: none; cursor: pointer; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
         .main-container { width: 100%; background: #0f0f0f; border-radius: 12px; border: 1px solid #222; padding: 12px; box-sizing: border-box; margin-bottom: 10px; }
         .section-title { font-size: 10px; color: gold; margin-bottom: 8px; display: block; border-left: 3px solid gold; padding-left: 5px; text-transform: uppercase; }
 
         .prizes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 10px; }
-        .prize-card { background: #1a1a1a; padding: 6px 2px; border-radius: 5px; text-align: center; border: 1px solid #333; }
-        .prize-card div { font-size: 9px; color: gold; font-weight: bold; }
+        .prize-card { background: #1a1a1a; padding: 6px 2px; border-radius: 5px; text-align: center; border: 1px solid #333; font-size: 9px; color: gold; font-weight: bold; }
 
         .item-row { display: flex; justify-content: space-between; align-items: center; background: #161616; padding: 8px; margin-bottom: 5px; border-radius: 8px; font-size: 12px; }
         .buy-btn { background: #25d366; color: white; padding: 5px 10px; border-radius: 5px; text-decoration: none; font-weight: bold; }
         
-        .wheel-container { position: relative; width: 220px; height: 220px; margin: 15px 0; }
-        #wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #333; position: relative; overflow: hidden; transition: transform 6s cubic-bezier(0.15, 0, 0, 1); background: #111; }
+        .wheel-container { position: relative; width: 240px; height: 240px; margin: 15px 0; }
+        #wheel { width: 100%; height: 100%; border-radius: 50%; border: 8px solid #222; position: relative; overflow: hidden; transition: transform 5s cubic-bezier(0.15, 0, 0, 1); background: #111; }
         .segment { position: absolute; width: 50%; height: 50%; transform-origin: 100% 100%; left: 0; top: 0; }
-        .pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 20px solid red; z-index: 10; }
+        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid gold; z-index: 10; }
         
-        #spin-btn { width: 100%; padding: 15px; border-radius: 30px; border: none; font-weight: bold; font-size: 16px; cursor: pointer; background: gold; color: black; }
+        #spin-btn { width: 100%; padding: 15px; border-radius: 30px; border: none; font-weight: bold; font-size: 16px; cursor: pointer; background: gold; color: black; box-shadow: 0 4px 15px rgba(218, 165, 32, 0.4); }
+        #spin-btn:disabled { background: #444; color: #888; cursor: not-allowed; }
 
-        .hist-item { font-size: 10px; padding: 4px 0; border-bottom: 1px solid #222; display: flex; justify-content: space-between; color: #888; }
-        #admin-panel { display: none; width: 100%; background: #001a00; border: 1px solid #0f0; border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: center; font-size: 12px; }
+        #admin-panel { display: none; width: 100%; background: #200; border: 1px solid red; border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: center; }
+        .hist-box { max-height: 150px; overflow-y: auto; margin-bottom: 8px; }
+        .hist-item { font-size: 10px; padding: 6px 0; border-bottom: 1px solid #222; display: flex; justify-content: space-between; color: #888; }
+        .clear-btn { background: #331111; color: #ff4444; border: 1px solid #442222; padding: 5px 10px; border-radius: 5px; font-size: 10px; cursor: pointer; width: 100%; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -53,36 +48,43 @@
     </div>
 
     <div id="admin-panel">
-        <b style="color:lime">ADMIN CODES</b>
-        <div id="view-codes" style="color:gold; margin:8px 0;"></div>
-        <button onclick="document.getElementById('admin-panel').style.display='none'" style="color:red; background:none; border:none;">[ CLOSE ]</button>
+        <b style="color:red">ADMIN MASTER CONTROL</b>
+        <div id="view-codes" style="color:gold; margin:8px 0; font-family: monospace; font-size: 14px;"></div>
+        <button onclick="resetAdminCodes()" style="background:gold; color:black; border:none; padding:8px; border-radius:5px; font-weight:bold; margin: 5px; cursor:pointer;">NEW CODES</button>
+        <button onclick="clearHistory()" style="background:orange; color:black; border:none; padding:8px; border-radius:5px; font-weight:bold; margin: 5px; cursor:pointer;">CLEAR ONLY HISTORY</button>
+        <button onclick="masterReset()" style="background:red; color:white; border:none; padding:8px; border-radius:5px; font-weight:bold; margin: 5px; cursor:pointer;">ERASE ALL DATA</button>
+        <br>
+        <button onclick="document.getElementById('admin-panel').style.display='none'" style="color:#aaa; background:none; border:none; margin-top:10px;">[ CLOSE ]</button>
     </div>
 
     <div class="header-box">
-        <div class="stat-card"><span id="txt-bal">SALIO</span>: <span id="coin-count">100</span></div>
-        <div class="stat-card"><span id="txt-new-code">KODI MPYA</span>: <span id="timer-box">02:00:00</span></div>
+        <div class="stat-card"><span id="txt-bal">SALIO</span>: <br><span id="coin-count">0</span></div>
+        <div class="stat-card"><span id="txt-new-code">KODI MPYA</span>: <br><span id="timer-box">00:00:00</span></div>
     </div>
 
-    <a id="free-50-btn" href="#" target="_blank">NAHITAJI 50 COINS</a>
+    <div id="free-50-btn" onclick="receiveFreeCoins()">NAHITAJI 50 COINS</div>
 
     <div class="main-container">
         <span class="section-title" id="txt-title-prizes">ZAWADI ZOTE</span>
         <div class="prizes-grid">
-            <div class="prize-card jackpot-card"><div>Vocha 3000</div></div>
-            <div class="prize-card"><div>Vocha 1000</div></div>
-            <div class="prize-card"><div>Vocha 500</div></div>
-            <div class="prize-card"><div>Vocha 200</div></div>
-            <div class="prize-card"><div>Vocha 100</div></div>
-            <div class="prize-card"><div>1000 Coins</div></div>
-            <div class="prize-card"><div>100 Coins</div></div>
-            <div class="prize-card"><div>80 Coins</div></div>
-            <div class="prize-card"><div>70 Coins</div></div>
+            <div class="prize-card" style="border-color:red">Vocha 3000</div>
+            <div class="prize-card">Vocha 1000</div>
+            <div class="prize-card">Vocha 500</div>
+            <div class="prize-card">Try Later</div>
+            <div class="prize-card">Try Later</div>
+            <div class="prize-card">1000 Coins</div>
+            <div class="prize-card">100 Coins</div>
+            <div class="prize-card">Free Spin</div>
+            <div class="prize-card">Try Later</div>
         </div>
         
         <span class="section-title" id="txt-title-shop">NUNUA COINS</span>
-        <div class="item-row"><span>100c (300/=)</span><a href="https://wa.me/255783983518?text=Nahitaji 100 Coins" target="_blank" class="buy-btn btn-buy">NUNUA</a></div>
-        <div class="item-row"><span>150c (450/=)</span><a href="https://wa.me/255783983518?text=Nahitaji 150 Coins" target="_blank" class="buy-btn btn-buy">NUNUA</a></div>
-        <div class="item-row" style="border: 1px solid gold;"><span>600c (200/=) OFFER</span><a href="https://wa.me/255783983518?text=Nahitaji Offer 600 Coins" target="_blank" class="buy-btn btn-buy">NUNUA</a></div>
+        <div class="item-row"><span>100c (150/=)</span><a href="https://wa.me/255783983518?text=Nahitaji 100 Coins" target="_blank" class="buy-btn btn-buy">NUNUA</a></div>
+        <div class="item-row"><span>1500c (2000/=)</span><a href="https://wa.me/255783983518?text=Nahitaji 1500 Coins" target="_blank" class="buy-btn btn-buy">NUNUA</a></div>
+        <div id="offer-row" class="item-row" style="border: 1px solid gold;">
+            <span>600c (400/=) <b style="color:lime">OFFER</b></span>
+            <a href="https://wa.me/255783983518?text=Nahitaji Offer 600 Coins" target="_blank" class="buy-btn btn-buy">NUNUA</a>
+        </div>
 
         <div style="display:flex; gap:5px; margin-top:10px;">
             <input type="text" id="code-input" placeholder="Weka kodi..." style="flex:1; background:#000; border:1px solid #444; color:gold; padding:10px; border-radius:5px; outline:none;">
@@ -103,60 +105,158 @@
     <button id="spin-btn" onclick="doSpin()">ZUNGUSHA (100 🪙)</button>
 
     <div class="main-container" style="margin-top:15px;">
-        <span class="section-title" id="txt-history">HISTORY</span>
-        <div id="spin-history"></div>
+        <span class="section-title" id="txt-history">FULL HISTORY</span>
+        <div id="spin-history" class="hist-box"></div>
+        <button class="clear-btn" onclick="clearHistory()">FUTA HISTORY</button>
     </div>
 
     <script>
         let lang = localStorage.getItem("lang") || "sw";
-        let coins = parseInt(localStorage.getItem("proCoins")) || 100;
+        let coins = parseInt(localStorage.getItem("proCoins")) || 0;
         let myVouchers = JSON.parse(localStorage.getItem("myVouchers") || "[]");
         let spinHistory = JSON.parse(localStorage.getItem("spinHistory") || "[]");
-        
-        // Hapa ndipo mabadiliko ya Siku ya Kwanza yalipo
-        let lastFreeSpin = localStorage.getItem("lastFreeSpin") === null ? 0 : parseInt(localStorage.getItem("lastFreeSpin"));
-        
+        let lastFreeSpin = parseInt(localStorage.getItem("lastFreeSpin")) || 0;
         let usedCodes = JSON.parse(localStorage.getItem("usedCodes") || "[]");
+        let customOffset = parseInt(localStorage.getItem("adminOffset")) || 0;
+        let offerUsed = localStorage.getItem("offerUsed") === "true";
+
+        function updateUI() {
+            const d = dict[lang];
+            document.getElementById('coin-count').innerText = coins;
+            document.getElementById('txt-bal').innerText = d.bal;
+            document.getElementById('txt-new-code').innerText = d.ncode;
+            document.getElementById('spin-btn').innerText = d.spin;
+
+            const offerEl = document.getElementById('offer-row');
+            if (offerUsed && offerEl) offerEl.style.display = "none";
+
+            const now = Date.now();
+            const fb = document.getElementById('free-50-btn');
+            if (now >= (lastFreeSpin + 86400000)) {
+                fb.innerText = "POKEA 50 COINS (BURE)";
+                fb.className = "active";
+            } else {
+                let diff = (lastFreeSpin + 86400000) - now;
+                let h = Math.floor(diff/3600000); 
+                let m = Math.floor((diff%3600000)/60000);
+                let s = Math.floor((diff%60000)/1000);
+                fb.innerText = `${h}h ${m}m ${s}s`;
+                fb.className = "";
+            }
+
+            const secNow = Math.floor(now / 1000);
+            const cycle = 7200; 
+            const block = Math.floor(secNow / cycle) + customOffset;
+            const c100 = (block % 8999) + 1111;
+            const c150 = (block % 8999) + 2222;
+            const c600 = (block % 8999) + 3333;
+            document.getElementById('view-codes').innerText = `100c:${c100} | 150c:${c150} | 600c:${c600}`;
+            localStorage.setItem("liveCodes", JSON.stringify({c100, c150, c600}));
+
+            const timeLeft = cycle - (secNow % cycle);
+            document.getElementById('timer-box').innerText = new Date(timeLeft * 1000).toISOString().substr(11, 8);
+            
+            renderLists();
+        }
+
+        function clearHistory() {
+            if(confirm("Je, una uhakika unataka kufuta history yako ya michezo?")) {
+                spinHistory = [];
+                localStorage.setItem("spinHistory", JSON.stringify(spinHistory));
+                updateUI();
+            }
+        }
+
+        function processEntry() {
+            const val = document.getElementById('code-input').value.trim();
+            const codes = JSON.parse(localStorage.getItem("liveCodes"));
+            if (val === "9999") { document.getElementById('admin-panel').style.display = 'block'; return; }
+            if (usedCodes.includes(val)) { alert("Kodi imeshatumika!"); return; }
+
+            if (val == codes.c100) coins += 100;
+            else if (val == codes.c150) coins += 150;
+            else if (val == codes.c600) { 
+                coins += 600; 
+                offerUsed = true;
+                localStorage.setItem("offerUsed", "true"); 
+            }
+            else { alert("Kodi Sio Sahihi!"); return; }
+
+            usedCodes.push(val);
+            save();
+            document.getElementById('code-input').value = "";
+            updateUI();
+        }
+
+        function receiveFreeCoins() {
+            const now = Date.now();
+            if (now >= (lastFreeSpin + 86400000)) {
+                coins += 50;
+                lastFreeSpin = now;
+                localStorage.setItem("lastFreeSpin", lastFreeSpin);
+                save(); updateUI();
+            }
+        }
+
+        function doSpin() {
+            if (coins < 100) { alert("Salio dogo mno!"); return; }
+            coins -= 100; save(); updateUI();
+            document.getElementById('spin-btn').disabled = true;
+            
+            let chance = Math.random() * 100;
+            let result = (chance <= 58) ? "Try Later" : (chance <= 90) ? "100 Coins" : (chance <= 99.5) ? "Free Spin" : "Vocha 3000";
+
+            document.getElementById('wheel').style.transform = `rotate(${3600 + Math.random()*360}deg)`;
+
+            setTimeout(() => {
+                document.getElementById('spin-btn').disabled = false;
+                if (result === "100 Coins" || result === "Free Spin") coins += 100;
+                if (result.includes("Vocha")) myVouchers.push({name: result, code: "V-"+Math.random().toString().slice(2,8)});
+                spinHistory.unshift({res: result, time: new Date().toLocaleTimeString()});
+                save(); updateUI();
+                alert("Matokeo: " + result);
+            }, 5000);
+        }
+
+        function renderLists() {
+            const vSec = document.getElementById('voucher-sec');
+            vSec.style.display = myVouchers.length > 0 ? "block" : "none";
+            document.getElementById('v-list').innerHTML = myVouchers.map((v, i) => `<div class="item-row"><span>${v.name}</span><button onclick="claimV(${i})" style="background:#25d366; border:none; color:white; padding:5px 10px; border-radius:4px;">TOA</button></div>`).join('');
+            document.getElementById('spin-history').innerHTML = spinHistory.slice(0, 20).map(h => `<div class="hist-item"><span>${h.res}</span><span>${h.time}</span></div>`).join('');
+        }
+
+        function claimV(i) {
+            window.open(`https://wa.me/255793770731?text=Nahitaji: ${myVouchers[i].name} (${myVouchers[i].code})`);
+            myVouchers.splice(i, 1); save(); updateUI();
+        }
+
+        function masterReset() { if(confirm("Futa kila kitu?")) { localStorage.clear(); location.reload(); } }
+        function resetAdminCodes() { customOffset = Math.floor(Math.random()*5000); localStorage.setItem("adminOffset", customOffset); updateUI(); }
+        function save() {
+            localStorage.setItem("proCoins", coins);
+            localStorage.setItem("usedCodes", JSON.stringify(usedCodes));
+            localStorage.setItem("myVouchers", JSON.stringify(myVouchers));
+            localStorage.setItem("spinHistory", JSON.stringify(spinHistory));
+        }
+        function setLang(l) { lang = l; localStorage.setItem("lang", l); updateUI(); }
 
         const dict = {
             sw: { bal: "SALIO", ncode: "KODI MPYA", tp: "ZAWADI ZOTE", ts: "NUNUA COINS", myr: "ZAWADI ZANGU", hist: "HISTORY", buy: "NUNUA", spin: "ZUNGUSHA (100 🪙)", free: "NAHITAJI 50 COINS" },
             en: { bal: "BALANCE", ncode: "NEW CODE", tp: "ALL PRIZES", ts: "BUY COINS", myr: "MY REWARDS", hist: "HISTORY", buy: "BUY", spin: "SPIN & WIN (100 🪙)", free: "NEED 50 FREE COINS" }
         };
 
-        function setLang(l) { lang = l; localStorage.setItem("lang", l); updateUI(); }
+        for(let i=0; i<10; i++) {
+            const el = document.createElement('div'); el.className = 'segment';
+            el.style.transform = `rotate(${i*36}deg) skewY(54deg)`;
+            el.style.backgroundColor = (i%2===0 ? "#111" : "#d4af37");
+            document.getElementById('wheel').appendChild(el);
+        }
 
-        function updateUI() {
-            const d = dict[lang];
-            document.getElementById('txt-bal').innerText = d.bal;
-            document.getElementById('txt-new-code').innerText = d.ncode;
-            document.getElementById('txt-title-prizes').innerText = d.tp;
-            document.getElementById('txt-title-shop').innerText = d.ts;
-            document.getElementById('txt-my-rewards').innerText = d.myr;
-            document.getElementById('txt-history').innerText = d.hist;
-            document.querySelectorAll('.btn-buy').forEach(b => b.innerText = d.buy);
-            document.getElementById('spin-btn').innerText = d.spin;
-            document.getElementById('coin-count').innerText = coins;
-
-            const now = Date.now();
-            const fb = document.getElementById('free-50-btn');
-            
-            // LOGIC: Siku ya kwanza (lastFreeSpin ni 0) au masaa 24 yamepita
-            if (lastFreeSpin === 0 || now >= (lastFreeSpin + 86400000)) {
-                fb.innerText = d.free + " (BURE)";
-                fb.className = "active";
-                fb.href = "https://wa.me/255783983518?text=Nahitaji 50 Coins za Bure";
-                fb.onclick = function() { 
-                    lastFreeSpin = Date.now(); 
-                    localStorage.setItem("lastFreeSpin", lastFreeSpin);
-                    setTimeout(updateUI, 1000); 
-                };
-            } else {
-                let diff = (lastFreeSpin + 86400000) - now;
-                let h = Math.floor(diff/3600000);
-                let m = Math.floor((diff%3600000)/60000);
-                let s = Math.floor((diff%60000)/1000);
-                fb.innerText = `${d.free}: ${h}h ${m}m ${s}s`;
-                fb.className = "";
+        setInterval(updateUI, 1000);
+        updateUI();
+    </script>
+</body>
+</html>
                 fb.href = "javascript:void(0)";
                 fb.onclick = null;
             }
