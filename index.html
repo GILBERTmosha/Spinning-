@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="sw">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bahati Spin Pro - History Delete</title>
+    <title>Bahati Spin Pro - HarakaPay Edition</title>
     <style>
         body { display: flex; flex-direction: column; align-items: center; background: #050505; font-family: sans-serif; color: white; padding: 10px; margin: 0; user-select: none; }
         
@@ -24,7 +25,8 @@
         .prize-card { background: #1a1a1a; padding: 6px 2px; border-radius: 5px; text-align: center; border: 1px solid #333; font-size: 9px; color: gold; font-weight: bold; }
 
         .item-row { display: flex; justify-content: space-between; align-items: center; background: #161616; padding: 8px; margin-bottom: 5px; border-radius: 8px; font-size: 12px; }
-        .buy-btn { background: #25d366; color: white; padding: 5px 10px; border-radius: 5px; text-decoration: none; font-weight: bold; }
+        .buy-btn { background: #25d366; color: white; padding: 5px 10px; border-radius: 5px; text-decoration: none; font-weight: bold; font-size: 11px; }
+        .btn-hp { background: #0072ff; }
         
         .wheel-container { position: relative; width: 240px; height: 240px; margin: 15px 0; }
         #wheel { width: 100%; height: 100%; border-radius: 50%; border: 8px solid #222; position: relative; overflow: hidden; transition: transform 5s cubic-bezier(0.15, 0, 0, 1); background: #111; }
@@ -78,16 +80,25 @@
             <div class="prize-card">Try Later</div>
         </div>
         
-        <span class="section-title" id="txt-title-shop">NUNUA COINS</span>
-        <div class="item-row"><span>100c (150/=)</span><a href="https://wa.me/255783983518?text=Nahitaji 100 Coins" target="_blank" class="buy-btn btn-buy">NUNUA</a></div>
-        <div class="item-row"><span>1500c (2000/=)</span><a href="https://wa.me/255783983518?text=Nahitaji 1500 Coins" target="_blank" class="buy-btn btn-buy">NUNUA</a></div>
-        <div id="offer-row" class="item-row" style="border: 1px solid gold;">
-            <span>600c (400/=) <b style="color:lime">OFFER</b></span>
-            <a href="https://wa.me/255783983518?text=Nahitaji Offer 600 Coins" target="_blank" class="buy-btn btn-buy">NUNUA</a>
+        <span class="section-title">NUNUA COINS (HARAKAPAY)</span>
+        <div class="item-row">
+            <span>150c (250/=)</span>
+            <a href="https://harakapay.net/pay/HPML70AHW1" target="_blank" class="buy-btn btn-hp" onclick="expectCode(150)">NUNUA</a>
+        </div>
+        <div class="item-row">
+            <span>300c (500/=)</span>
+            <a href="https://harakapay.net/pay/HPML70NDKT" target="_blank" class="buy-btn btn-hp" onclick="expectCode(300)">NUNUA</a>
+        </div>
+        <div class="item-row" style="border: 1px solid gold;">
+            <span>1000c (500/=) <b style="color:lime">OFFER X2</b></span>
+            <a href="https://harakapay.net/pay/HPML70P3Q5" target="_blank" class="buy-btn" style="background:gold; color:black;" onclick="expectCode(1000)">NUNUA</a>
         </div>
 
-        <div style="display:flex; gap:5px; margin-top:10px;">
-            <input type="text" id="code-input" placeholder="Weka kodi..." style="flex:1; background:#000; border:1px solid #444; color:gold; padding:10px; border-radius:5px; outline:none;">
+        <span class="section-title" id="txt-title-shop" style="margin-top:10px;">WhatsApp Manual</span>
+        <div class="item-row"><span>100c (150/=)</span><a href="https://wa.me/255783983518?text=Nahitaji 100 Coins" target="_blank" class="buy-btn">WHATSAPP</a></div>
+
+        <div style="display:flex; gap:5px; margin-top:15px;">
+            <input type="text" id="code-input" placeholder="Weka kodi ya SMS hapa..." style="flex:1; background:#000; border:1px solid #444; color:gold; padding:10px; border-radius:5px; outline:none;">
             <button onclick="processEntry()" style="background:gold; border:none; padding:0 15px; border-radius:5px; font-weight:bold;">OK</button>
         </div>
     </div>
@@ -118,7 +129,7 @@
         let lastFreeSpin = parseInt(localStorage.getItem("lastFreeSpin")) || 0;
         let usedCodes = JSON.parse(localStorage.getItem("usedCodes") || "[]");
         let customOffset = parseInt(localStorage.getItem("adminOffset")) || 0;
-        let offerUsed = localStorage.getItem("offerUsed") === "true";
+        let pendingAmount = parseInt(localStorage.getItem("pendingCoins")) || 0;
 
         function updateUI() {
             const d = dict[lang];
@@ -127,13 +138,10 @@
             document.getElementById('txt-new-code').innerText = d.ncode;
             document.getElementById('spin-btn').innerText = d.spin;
 
-            const offerEl = document.getElementById('offer-row');
-            if (offerUsed && offerEl) offerEl.style.display = "none";
-
             const now = Date.now();
             const fb = document.getElementById('free-50-btn');
             if (now >= (lastFreeSpin + 86400000)) {
-                fb.innerText = "POKEA 50 COINS (BURE)";
+                fb.innerText = lang === "sw" ? "POKEA 50 COINS (BURE)" : "CLAIM 50 FREE COINS";
                 fb.className = "active";
             } else {
                 let diff = (lastFreeSpin + 86400000) - now;
@@ -150,6 +158,133 @@
             const c100 = (block % 8999) + 1111;
             const c150 = (block % 8999) + 2222;
             const c600 = (block % 8999) + 3333;
+            document.getElementById('view-codes').innerText = `100c:${c100} | 150c:${c150} | 600c:${c600}`;
+            localStorage.setItem("liveCodes", JSON.stringify({c100, c150, c600}));
+
+            const timeLeft = cycle - (secNow % cycle);
+            document.getElementById('timer-box').innerText = new Date(timeLeft * 1000).toISOString().substr(11, 8);
+            
+            renderLists();
+        }
+
+        function expectCode(amt) {
+            localStorage.setItem("pendingCoins", amt);
+            pendingAmount = amt;
+            alert("Malipo yamefunguliwa. Baada ya kukamilisha, weka kodi uliyotumiwa kwenye SMS hapa chini.");
+        }
+
+        function processEntry() {
+            const val = document.getElementById('code-input').value.trim();
+            const codes = JSON.parse(localStorage.getItem("liveCodes"));
+            
+            if (val === "9999") { document.getElementById('admin-panel').style.display = 'block'; return; }
+            if (usedCodes.includes(val)) { alert("Kodi imeshatumika!"); return; }
+
+            // Logic ya HarakaPay (Kodi kuanza na HP au kuwa ndefu)
+            if (val.toUpperCase().startsWith("HP") || val.length > 5) {
+                if (pendingAmount > 0) {
+                    coins += pendingAmount;
+                    alert("Hongera! Umeongezewa " + pendingAmount + " Coins.");
+                    localStorage.removeItem("pendingCoins");
+                    pendingAmount = 0;
+                } else {
+                    alert("Kodi haijatambuliwa. Hakikisha umebonyeza NUNUA kwanza.");
+                    return;
+                }
+            } 
+            // Kodi za Admin
+            else if (val == codes.c100) coins += 100;
+            else if (val == codes.c150) coins += 150;
+            else if (val == codes.c600) coins += 600;
+            else { alert("Kodi Sio Sahihi!"); return; }
+
+            usedCodes.push(val);
+            save();
+            document.getElementById('code-input').value = "";
+            updateUI();
+        }
+
+        function clearHistory() {
+            if(confirm("Je, una uhakika unataka kufuta history?")) {
+                spinHistory = [];
+                localStorage.setItem("spinHistory", JSON.stringify(spinHistory));
+                updateUI();
+            }
+        }
+
+        function receiveFreeCoins() {
+            const now = Date.now();
+            if (now >= (lastFreeSpin + 86400000)) {
+                coins += 50;
+                lastFreeSpin = now;
+                localStorage.setItem("lastFreeSpin", lastFreeSpin);
+                save(); updateUI();
+            }
+        }
+
+        function doSpin() {
+            if (coins < 100) { alert("Salio dogo mno!"); return; }
+            coins -= 100; save(); updateUI();
+            document.getElementById('spin-btn').disabled = true;
+            
+            let chance = Math.random() * 100;
+            let result = (chance <= 58) ? "Try Later" : (chance <= 90) ? "100 Coins" : (chance <= 99.5) ? "Free Spin" : "Vocha 3000";
+
+            document.getElementById('wheel').style.transform = `rotate(${3600 + Math.random()*360}deg)`;
+
+            setTimeout(() => {
+                document.getElementById('spin-btn').disabled = false;
+                if (result === "100 Coins" || result === "Free Spin") coins += 100;
+                if (result.includes("Vocha")) myVouchers.push({name: result, code: "V-"+Math.random().toString().slice(2,8)});
+                spinHistory.unshift({res: result, time: new Date().toLocaleTimeString()});
+                save(); updateUI();
+                alert("Matokeo: " + result);
+            }, 5000);
+        }
+
+        function renderLists() {
+            const vSec = document.getElementById('voucher-sec');
+            vSec.style.display = myVouchers.length > 0 ? "block" : "none";
+            document.getElementById('v-list').innerHTML = myVouchers.map((v, i) => `<div class="item-row"><span>${v.name}</span><button onclick="claimV(${i})" style="background:#25d366; border:none; color:white; padding:5px 10px; border-radius:4px;">TOA</button></div>`).join('');
+            document.getElementById('spin-history').innerHTML = spinHistory.slice(0, 15).map(h => `<div class="hist-item"><span>${h.res}</span><span>${h.time}</span></div>`).join('');
+        }
+
+        function claimV(i) {
+            window.open(`https://wa.me/255793770731?text=Nahitaji: ${myVouchers[i].name} (${myVouchers[i].code})`);
+            myVouchers.splice(i, 1); save(); updateUI();
+        }
+
+        function masterReset() { if(confirm("Futa kila kitu?")) { localStorage.clear(); location.reload(); } }
+        function resetAdminCodes() { customOffset = Math.floor(Math.random()*5000); localStorage.setItem("adminOffset", customOffset); updateUI(); }
+        
+        function save() {
+            localStorage.setItem("proCoins", coins);
+            localStorage.setItem("usedCodes", JSON.stringify(usedCodes));
+            localStorage.setItem("myVouchers", JSON.stringify(myVouchers));
+            localStorage.setItem("spinHistory", JSON.stringify(spinHistory));
+        }
+
+        function setLang(l) { lang = l; localStorage.setItem("lang", l); updateUI(); }
+
+        const dict = {
+            sw: { bal: "SALIO", ncode: "KODI MPYA", tp: "ZAWADI ZOTE", ts: "NUNUA COINS", myr: "ZAWADI ZANGU", hist: "HISTORY", buy: "NUNUA", spin: "ZUNGUSHA (100 🪙)" },
+            en: { bal: "BALANCE", ncode: "NEW CODE", tp: "ALL PRIZES", ts: "BUY COINS", myr: "MY REWARDS", hist: "HISTORY", buy: "BUY", spin: "SPIN (100 🪙)" }
+        };
+
+        const wheel = document.getElementById('wheel');
+        for(let i=0; i<10; i++) {
+            const el = document.createElement('div'); el.className = 'segment';
+            el.style.transform = `rotate(${i*36}deg) skewY(54deg)`;
+            el.style.backgroundColor = (i%2===0 ? "#111" : "#d4af37");
+            wheel.appendChild(el);
+        }
+
+        setInterval(updateUI, 1000);
+        updateUI();
+    </script>
+</body>
+</html>
+
             document.getElementById('view-codes').innerText = `100c:${c100} | 150c:${c150} | 600c:${c600}`;
             localStorage.setItem("liveCodes", JSON.stringify({c100, c150, c600}));
 
